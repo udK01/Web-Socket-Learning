@@ -6,9 +6,11 @@ let messages = [];
 
 wss.on("connection", (ws) => {
   const userID = uuidv4();
+  const profilePicture = "logo.png";
   console.log(`New client connected with ID: ${userID}`);
 
   ws.send(JSON.stringify({ type: "history", messages }));
+  ws.send(JSON.stringify({ type: "user", userID, profilePicture }));
 
   ws.on("message", (data) => {
     const message = data.toString();
