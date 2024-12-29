@@ -7,5 +7,9 @@ export default function App() {
     ws.send("Hey, how is it going?");
   });
 
+  ws.addEventListener("message", ({ data }) => {
+    console.log(data);
+  });
+
   return <div className="text-[32px] text-orange-500">Hello</div>;
 }
