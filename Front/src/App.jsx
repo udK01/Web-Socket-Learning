@@ -3,6 +3,8 @@ export default function App() {
 
   ws.addEventListener("open", () => {
     console.log("We are connected!");
+
+    ws.send("Hey, how is it going?");
   });
 
   return <div className="text-[32px] text-orange-500">Hello</div>;
