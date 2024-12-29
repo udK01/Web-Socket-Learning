@@ -1,11 +1,8 @@
+import { useState } from "react";
+
 export default function App() {
   const ws = new WebSocket("ws://localhost:8080");
-
-  ws.addEventListener("open", () => {
-    console.log("We are connected!");
-
-    ws.send("Hey, how is it going?");
-  });
+  const [message, setMessage] = useState("");
 
   ws.addEventListener("message", ({ data }) => {
     console.log(data);
@@ -23,7 +20,22 @@ export default function App() {
           </ul>
         </div>
         <div className="w-[75%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
-          <div>Chat</div>
+          <div className="w-full h-[90%]"></div>
+          <input
+            className="w-full h-[10%] bg-transparent ring-1 rounded-md p-2 text-left align-top resize-none overflow-y-auto focus:outline-none text-white"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (message.trim() !== "") {
+                  ws.send(message);
+                  setMessage("");
+                }
+              }
+            }}
+            placeholder="Type your message here..."
+          />
         </div>
       </div>
     </section>

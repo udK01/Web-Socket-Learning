@@ -8,7 +8,7 @@ wss.on("connection", (ws) => {
   ws.on("message", (data) => {
     console.log("Client has sent us: ", data.toString());
 
-    ws.send(data.toString().toUpperCase());
+    ws.send(data.toString());
   });
 
   ws.on("close", () => {
