@@ -15,7 +15,12 @@ export default function App() {
 
     socket.addEventListener("message", ({ data }) => {
       const parsedData = JSON.parse(data);
-      setMessageData((prevMessages) => [...prevMessages, ...parsedData]);
+
+      if (parsedData.type === "history") {
+        setMessageData(parsedData.messages);
+      } else if (parsedData.type === "message") {
+        setMessageData((prevMessages) => [...prevMessages, parsedData.data]);
+      }
     });
 
     setWs(socket);
@@ -46,8 +51,13 @@ export default function App() {
         <div className="w-[75%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
           <div className="w-full h-[90%]">
             <div className="p-4 text-white h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent">
-              {messageData.map((message, index) => (
-                <p key={index}>{message}</p>
+              {messageData.map((msg, index) => (
+                <div key={index} className="mb-2">
+                  <span className="font-bold text-sm text-gray-300">
+                    User {msg.userID}:
+                  </span>{" "}
+                  <span>{msg.message}</span>
+                </div>
               ))}
               <div ref={messagesEndRef} />
             </div>

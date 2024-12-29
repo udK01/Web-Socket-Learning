@@ -1,25 +1,30 @@
 const WebSocket = require("ws");
+const { v4: uuidv4 } = require("uuid");
 
 const wss = new WebSocket.Server({ port: 8080 });
 let messages = [];
 
 wss.on("connection", (ws) => {
-  console.log("New client connected!");
+  const userID = uuidv4();
+  console.log(`New client connected with ID: ${userID}`);
 
-  ws.send(JSON.stringify(messages));
+  ws.send(JSON.stringify({ type: "history", messages }));
 
   ws.on("message", (data) => {
     const message = data.toString();
-    messages.push(message);
+    const messageWithUserID = { userID, message };
+    messages.push(messageWithUserID);
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify([message]));
+        client.send(
+          JSON.stringify({ type: "message", data: messageWithUserID })
+        );
       }
     });
   });
 
   ws.on("close", () => {
-    console.log("Client has disconnected.");
+    console.log(`Client with ID ${userID} has disconnected.`);
   });
 });
