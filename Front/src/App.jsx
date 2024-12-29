@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function App() {
   const [ws, setWs] = useState(null);
   const [message, setMessage] = useState("");
   const [messageData, setMessageData] = useState([]);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
@@ -24,6 +25,12 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messageData]);
+
   const handleSendMessage = () => {
     if (message.trim() !== "" && ws) {
       ws.send(message);
@@ -38,10 +45,11 @@ export default function App() {
         <div className="w-[25%] bg-slate-700 ring-4 ring-slate-800 rounded-md"></div>
         <div className="w-[75%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
           <div className="w-full h-[90%]">
-            <div className="p-4 text-white h-full overflow-y-auto">
+            <div className="p-4 text-white h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent">
               {messageData.map((message, index) => (
                 <p key={index}>{message}</p>
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </div>
           <input
