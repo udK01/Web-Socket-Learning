@@ -1,8 +1,9 @@
 import React from "react";
 
 const EditUser = ({
-  userID,
-  setUserID,
+  ws,
+  nickname,
+  setNickname,
   profilePicture,
   setProfilePicture,
   setEdit,
@@ -18,14 +19,22 @@ const EditUser = ({
     }
   };
 
-  const handleUserIDChange = (e) => {
-    setUserID(e.target.value);
+  const handleNicknameChange = (e) => {
+    setNickname(e.target.value);
   };
 
   const handleSubmit = () => {
     setEdit(false);
-    console.log("Updated userID:", userID);
-    console.log("Updated profile picture:", profilePicture);
+
+    if (ws) {
+      ws.send(
+        JSON.stringify({
+          type: "update_user",
+          updatedNickname: nickname,
+          updatedProfilePicture: profilePicture,
+        })
+      );
+    }
   };
 
   return (
@@ -54,8 +63,8 @@ const EditUser = ({
             onChange={handleProfilePictureChange}
           />
           <input
-            value={userID}
-            onChange={handleUserIDChange}
+            value={nickname}
+            onChange={handleNicknameChange}
             placeholder="Enter user ID"
             className="w-[90%] bg-transparent text-center"
           />

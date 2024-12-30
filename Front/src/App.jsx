@@ -3,7 +3,7 @@ import EditUser from "./EditUser";
 
 export default function App() {
   const [ws, setWs] = useState(null);
-  const [userID, setUserID] = useState(null);
+  const [nickname, setNickname] = useState(null);
   const [edit, setEdit] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [message, setMessage] = useState("");
@@ -23,8 +23,8 @@ export default function App() {
       if (parsedData.type === "history") {
         setMessageData(parsedData.messages);
       } else if (parsedData.type === "user") {
+        setNickname(parsedData.nickname);
         setProfilePicture(parsedData.profilePicture);
-        setUserID(parsedData.userID);
       } else {
         setMessageData((prevMessages) => [...prevMessages, parsedData.data]);
       }
@@ -45,7 +45,12 @@ export default function App() {
 
   const handleSendMessage = () => {
     if (message.trim() !== "" && ws) {
-      ws.send(message);
+      ws.send(
+        JSON.stringify({
+          type: "message",
+          message,
+        })
+      );
       setMessage("");
     }
   };
@@ -54,8 +59,9 @@ export default function App() {
     <section className="h-screen bg-slate-600 flex flex-col justify-center items-center">
       {edit && (
         <EditUser
-          userID={userID}
-          setUserID={setUserID}
+          ws={ws}
+          nickname={nickname}
+          setNickname={setNickname}
           profilePicture={profilePicture}
           setProfilePicture={setProfilePicture}
           setEdit={setEdit}
@@ -74,7 +80,7 @@ export default function App() {
               className="w-10 h-10 rounded-full ring-1 ring-white"
             />
             <div className="text-white text-ellipsis line-clamp-1 text-[20px] whitespace-nowrap overflow-hidden">
-              {userID}
+              {nickname}
             </div>
           </div>
         </div>
@@ -89,7 +95,7 @@ export default function App() {
                       className="size-10 ring-1 ring-white rounded-full"
                     />
                     <span className="font-bold text-sm text-gray-300">
-                      User {msg.userID}
+                      {msg.nickname}
                     </span>
                   </div>
 
