@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import EditUser from "./EditUser";
 
 export default function App() {
   const [ws, setWs] = useState(null);
   const [userID, setUserID] = useState(null);
+  const [edit, setEdit] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [message, setMessage] = useState("");
   const [messageData, setMessageData] = useState([]);
@@ -35,14 +37,12 @@ export default function App() {
     };
   }, []);
 
-  // Auto Scroll
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messageData]);
 
-  // Message Handler
   const handleSendMessage = () => {
     if (message.trim() !== "" && ws) {
       ws.send(message);
@@ -52,13 +52,26 @@ export default function App() {
 
   return (
     <section className="h-screen bg-slate-600 flex flex-col justify-center items-center">
+      {edit && (
+        <EditUser
+          userID={userID}
+          setUserID={setUserID}
+          profilePicture={profilePicture}
+          setProfilePicture={setProfilePicture}
+          setEdit={setEdit}
+        />
+      )}
+
       <div className="flex w-[40%] h-[60%]">
         <div className="w-[30%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
           <div className="w-full h-[90%]"></div>
-          <div className="w-full h-[10%] flex items-center gap-2 bg-slate-800 rounded-md p-2">
+          <div
+            className="w-full h-[10%] flex items-center gap-2 bg-slate-800 rounded-md p-2 hover:bg-slate-900 hover:cursor-pointer"
+            onClick={() => setEdit(true)}
+          >
             <img
-              src={`./${profilePicture}`}
-              className="h-full rounded-full ring-1 ring-white"
+              src={profilePicture}
+              className="w-10 h-10 rounded-full ring-1 ring-white"
             />
             <div className="text-white text-ellipsis line-clamp-1 text-[20px] whitespace-nowrap overflow-hidden">
               {userID}
@@ -72,8 +85,8 @@ export default function App() {
                 <div key={index} className="mb-2 flex flex-col">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`./${profilePicture}`}
-                      className="w-[6%] ring-1 ring-white rounded-full"
+                      src={profilePicture}
+                      className="size-10 ring-1 ring-white rounded-full"
                     />
                     <span className="font-bold text-sm text-gray-300">
                       User {msg.userID}
