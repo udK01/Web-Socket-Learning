@@ -1,42 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
+
+import { useWebSocket } from "./WebSocketProvider";
 import { useUser } from "./UserProvider";
+
 import EditUser from "./EditUser";
 
 export default function App() {
-  const { nickname, profilePicture, setNickname, setProfilePicture } =
-    useUser();
+  const { nickname, profilePicture } = useUser();
+  const { ws } = useWebSocket();
 
-  const [ws, setWs] = useState(null);
   const [edit, setEdit] = useState(false);
-
   const [message, setMessage] = useState("");
   const [messageData, setMessageData] = useState([]);
   const messagesEndRef = useRef(null);
 
   // History - Message Updater.
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080");
+    if (ws) {
+      const handleMessage = ({ data }) => {
+        const parsedData = JSON.parse(data);
+        if (parsedData.type === "history") {
+          setMessageData(parsedData.messages);
+        } else {
+          setMessageData((prevMessages) => [...prevMessages, parsedData.data]);
+        }
+      };
 
-    socket.addEventListener("open", () => {
-      console.log("WebSocket connected!");
-    });
+      ws.addEventListener("message", handleMessage);
 
-    socket.addEventListener("message", ({ data }) => {
-      const parsedData = JSON.parse(data);
-
-      if (parsedData.type === "history") {
-        setMessageData(parsedData.messages);
-      } else if (parsedData.type === "message") {
-        setMessageData((prevMessages) => [...prevMessages, parsedData.data]);
-      }
-    });
-
-    setWs(socket);
-
-    return () => {
-      socket.close();
-    };
-  }, []);
+      return () => {
+        ws.removeEventListener("message", handleMessage);
+      };
+    }
+  }, [ws]);
 
   // Smooth Scroll
   useEffect(() => {
@@ -81,20 +77,22 @@ export default function App() {
         <div className="w-[70%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
           <div className="w-full h-[90%]">
             <div className="p-4 text-white h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent">
-              {messageData.map((msg, index) => (
-                <div key={index} className="mb-2 flex flex-col">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={profilePicture}
-                      className="size-10 ring-1 ring-white rounded-full"
-                    />
-                    <span className="font-bold text-sm text-gray-300">
-                      {msg.nickname}
-                    </span>
+              {messageData
+                .filter((msg) => msg !== undefined)
+                .map((msg, index) => (
+                  <div key={index} className="mb-2 flex flex-col">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={profilePicture}
+                        className="size-10 ring-1 ring-white rounded-full"
+                      />
+                      <span className="font-bold text-sm text-gray-300">
+                        {msg.nickname ? msg.nickname : "Unknown User"}
+                      </span>
+                    </div>
+                    <span>{msg.message}</span>
                   </div>
-                  <span>{msg.message}</span>
-                </div>
-              ))}
+                ))}
               <div ref={messagesEndRef} />
             </div>
           </div>

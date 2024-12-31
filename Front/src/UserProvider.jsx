@@ -1,31 +1,26 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { useWebSocket } from "./WebSocketProvider";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const { ws } = useWebSocket();
+
   const [nickname, setNickname] = useState("Anonymous");
   const [profilePicture, setProfilePicture] = useState("logo.png");
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080");
+    if (ws) {
+      const handleMessage = ({ data }) => {
+        const parsedData = JSON.parse(data);
 
-    socket.addEventListener("open", () => {
-      console.log("WebSocket connected!");
-    });
-
-    socket.addEventListener("message", ({ data }) => {
-      const parsedData = JSON.parse(data);
-
-      if (parsedData.type === "user") {
-        setNickname(parsedData.nickname);
-        setProfilePicture(parsedData.profilePicture);
-      }
-    });
-
-    return () => {
-      socket.close();
-    };
-  }, []);
+        if (parsedData.type === "user") {
+          setNickname(parsedData.nickname);
+          setProfilePicture(parsedData.profilePicture);
+        }
+      };
+    }
+  }, [ws]);
 
   return (
     <UserContext.Provider
