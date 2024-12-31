@@ -12,13 +12,6 @@ const User = () => {
 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfilePicture(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleSubmit = () => {
@@ -27,16 +20,16 @@ const User = () => {
     setEdit(false);
     if (newNick.trim() !== "") {
       setNickname(newNick);
-    }
 
-    if (ws) {
-      ws.send(
-        JSON.stringify({
-          type: "update_user",
-          updatedNickname: nickname,
-          updatedProfilePicture: profilePicture,
-        })
-      );
+      if (ws) {
+        ws.send(
+          JSON.stringify({
+            type: "update_user",
+            updatedNickname: newNick,
+            updatedProfilePicture: profilePicture,
+          })
+        );
+      }
     }
   };
 
