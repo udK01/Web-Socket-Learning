@@ -21,12 +21,13 @@ const User = () => {
     }
   };
 
-  const handleNicknameChange = (e) => {
-    setNickname(e.target.value);
-  };
-
   const handleSubmit = () => {
+    let newNick = document.getElementById("nameInput").value;
+
     setEdit(false);
+    if (newNick.trim() !== "") {
+      setNickname(newNick);
+    }
 
     if (ws) {
       ws.send(
@@ -83,9 +84,8 @@ const User = () => {
               onChange={handleProfilePictureChange}
             />
             <input
-              value={nickname}
-              onChange={handleNicknameChange}
-              placeholder="Enter user ID"
+              id="nameInput"
+              placeholder={`${nickname}`}
               className="w-[90%] bg-transparent text-center"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
