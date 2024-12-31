@@ -64,6 +64,12 @@ const EditUser = ({ ws, setEdit }) => {
             onChange={handleNicknameChange}
             placeholder="Enter user ID"
             className="w-[90%] bg-transparent text-center"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
           />
           <button
             className="text-white rounded-md ring-2 ring-purple-900 bg-purple-800 px-6 py-1 hover:bg-purple-900 hover:ring-purple-950"
