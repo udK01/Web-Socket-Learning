@@ -87,7 +87,7 @@ export default function App() {
                         className="size-10 ring-1 ring-white rounded-full"
                       />
                       <span className="font-bold text-sm text-gray-300">
-                        {msg.nickname ? msg.nickname : "Unknown User"}
+                        {msg.nickname}
                       </span>
                     </div>
                     <span>{msg.message}</span>
