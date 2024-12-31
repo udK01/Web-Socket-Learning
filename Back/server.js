@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const { v4: uuidv4, parse } = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 
 const wss = new WebSocket.Server({ port: 8080 });
 let messages = [];
@@ -14,6 +14,7 @@ wss.on("connection", (ws) => {
 
   users[userID] = { nickname, profilePicture };
 
+  // Initialise User & Chat Logs.
   ws.send(JSON.stringify({ type: "history", messages }));
   ws.send(JSON.stringify({ type: "user", nickname, profilePicture }));
 
@@ -21,45 +22,9 @@ wss.on("connection", (ws) => {
     const parsedData = JSON.parse(data);
 
     if (parsedData.type === "message") {
-      const fullMessage = {
-        userID: userID,
-        nickname: users[userID].nickname,
-        message: parsedData.message,
-      };
-      messages.push(fullMessage);
-
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({ type: "message", data: fullMessage }));
-        }
-      });
+      handleMessages(userID, parsedData);
     } else if (parsedData.type === "update_user") {
-      const {
-        updatedNickname: updatedNickname,
-        updatedProfilePicture: updatedProfilePicture,
-      } = parsedData;
-
-      if (users[userID]) {
-        users[userID].nickname = updatedNickname;
-        users[userID].profilePicture = updatedProfilePicture;
-      }
-
-      messages.forEach((msg) => {
-        if (msg.userID === userID) {
-          msg.nickname = updatedNickname;
-        }
-      });
-
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(
-            JSON.stringify({
-              type: "history",
-              messages,
-            })
-          );
-        }
-      });
+      handleUserUpdated(userID, parsedData);
     }
   });
 
@@ -68,3 +33,55 @@ wss.on("connection", (ws) => {
     delete users[userID];
   });
 });
+
+function handleMessages(userID, parsedData) {
+  // Destructure Data Received.
+  const fullMessage = {
+    userID: userID,
+    nickname: users[userID].nickname,
+    message: parsedData.message,
+  };
+
+  // Add To Log.
+  messages.push(fullMessage);
+
+  // Send Full Message To The Front.
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify({ type: "message", data: fullMessage }));
+    }
+  });
+}
+
+function handleUserUpdated(userID, parsedData) {
+  // Destructure Data Received.
+  const {
+    updatedNickname: updatedNickname,
+    updatedProfilePicture: updatedProfilePicture,
+  } = parsedData;
+
+  // Alter User.
+  if (users[userID]) {
+    users[userID].nickname = updatedNickname;
+    users[userID].profilePicture = updatedProfilePicture;
+  }
+
+  // Alter Log.
+  messages.forEach((msg) => {
+    if (msg.userID === userID) {
+      msg.nickname = updatedNickname;
+    }
+  });
+
+  // Update Other User's Logs.
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(
+        JSON.stringify({
+          type: "history",
+          messages,
+        })
+      );
+    }
+  });
+}
