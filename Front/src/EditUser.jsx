@@ -1,13 +1,10 @@
+import { useUser } from "./UserProvider";
 import React from "react";
 
-const EditUser = ({
-  ws,
-  nickname,
-  setNickname,
-  profilePicture,
-  setProfilePicture,
-  setEdit,
-}) => {
+const EditUser = ({ ws, setEdit }) => {
+  const { nickname, profilePicture, setNickname, setProfilePicture } =
+    useUser();
+
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (file) {

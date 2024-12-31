@@ -1,15 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useUser } from "./UserProvider";
 import EditUser from "./EditUser";
 
 export default function App() {
+  const { nickname, profilePicture, setNickname, setProfilePicture } =
+    useUser();
+
   const [ws, setWs] = useState(null);
-  const [nickname, setNickname] = useState(null);
   const [edit, setEdit] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(null);
+
   const [message, setMessage] = useState("");
   const [messageData, setMessageData] = useState([]);
   const messagesEndRef = useRef(null);
 
+  // History - Message Updater.
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
 
@@ -22,10 +26,7 @@ export default function App() {
 
       if (parsedData.type === "history") {
         setMessageData(parsedData.messages);
-      } else if (parsedData.type === "user") {
-        setNickname(parsedData.nickname);
-        setProfilePicture(parsedData.profilePicture);
-      } else {
+      } else if (parsedData.type === "message") {
         setMessageData((prevMessages) => [...prevMessages, parsedData.data]);
       }
     });
@@ -37,12 +38,14 @@ export default function App() {
     };
   }, []);
 
+  // Smooth Scroll
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messageData]);
 
+  // Message Handler
   const handleSendMessage = () => {
     if (message.trim() !== "" && ws) {
       ws.send(
@@ -57,16 +60,7 @@ export default function App() {
 
   return (
     <section className="h-screen bg-slate-600 flex flex-col justify-center items-center">
-      {edit && (
-        <EditUser
-          ws={ws}
-          nickname={nickname}
-          setNickname={setNickname}
-          profilePicture={profilePicture}
-          setProfilePicture={setProfilePicture}
-          setEdit={setEdit}
-        />
-      )}
+      {edit && <EditUser ws={ws} setEdit={setEdit} />}
 
       <div className="flex w-[40%] h-[60%]">
         <div className="w-[30%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
@@ -98,7 +92,6 @@ export default function App() {
                       {msg.nickname}
                     </span>
                   </div>
-
                   <span>{msg.message}</span>
                 </div>
               ))}
