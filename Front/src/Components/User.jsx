@@ -1,21 +1,43 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 import { useWebSocket } from "../WebSocketProvider";
 import { useUser } from "../UserProvider";
 
 const User = () => {
-  const { nickname, profilePicture, setNickname, setProfilePicture } =
+  const { userID, nickname, profilePicture, setNickname, setProfilePicture } =
     useUser();
   const { ws } = useWebSocket();
 
   const [edit, setEdit] = useState(false);
 
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
+  const handleProfilePictureChange = (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("userID", userID);
+
+    try {
+      axios
+        .post(`/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("File uploaded successfully:", response.data.message);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+        });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
   };
 
   const handleSubmit = () => {
     let newNick = document.getElementById("nameInput").value;
+    let newProfilePicture = document.getElementById("profilePictureInput")
+      .files[0];
 
     setEdit(false);
     if (newNick.trim() !== "") {
@@ -30,6 +52,10 @@ const User = () => {
           })
         );
       }
+    }
+
+    if (newProfilePicture) {
+      handleProfilePictureChange(newProfilePicture);
     }
   };
 
@@ -74,7 +100,6 @@ const User = () => {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={handleProfilePictureChange}
             />
             <input
               id="nameInput"
