@@ -46,7 +46,7 @@ export default function Log() {
             <div key={index} className="mb-2 flex flex-col">
               <div className="flex items-center gap-3">
                 <img
-                  src={profilePicture}
+                  src={msg.profilePicture}
                   className="size-10 ring-1 ring-white rounded-full"
                 />
                 <span className="font-bold text-sm text-gray-300">

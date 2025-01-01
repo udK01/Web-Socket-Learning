@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "../Front/public/uploads/");
+    cb(null, "../Front/public/");
   },
   filename: (req, file, cb) => {
     const currentTimeInMillis = Date.now();
@@ -34,14 +34,9 @@ app.post("/upload", upload.single("file"), (req, res) => {
     return res.status(400).json({ message: "File or userID is missing" });
   }
 
-  console.log("File uploaded for user:", userID);
-  console.log("File details:", req.file);
+  res.status(200).json(req.file.filename);
 
-  res.status(200).json({
-    message: "File uploaded successfully",
-    filePath: `/uploads/${req.file.filename}`,
-    userID,
-  });
+  users[userID].profilePicture = req.file.filename;
 });
 
 // Start Express Server
@@ -83,6 +78,7 @@ function handleMessages(userID, parsedData) {
   const fullMessage = {
     userID: userID,
     nickname: users[userID].nickname,
+    profilePicture: users[userID].profilePicture,
     message: parsedData.message,
   };
 
