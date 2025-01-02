@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 
 import { useWebSocket } from "../WebSocketProvider";
@@ -10,6 +10,9 @@ const User = () => {
   const { ws } = useWebSocket();
 
   const [edit, setEdit] = useState(false);
+
+  const fileInputRef = useRef(null);
+  const nameInputRef = useRef(null);
 
   const handleProfilePictureChange = (file) => {
     const formData = new FormData();
@@ -35,9 +38,8 @@ const User = () => {
   };
 
   const handleSubmit = () => {
-    let newNick = document.getElementById("nameInput").value;
-    let newProfilePicture = document.getElementById("profilePictureInput")
-      .files[0];
+    const newNick = nameInputRef.current.value;
+    const newProfilePicture = fileInputRef.current.files[0];
 
     setEdit(false);
     if (newNick.trim() !== "") {
@@ -56,6 +58,10 @@ const User = () => {
 
     if (newProfilePicture) {
       handleProfilePictureChange(newProfilePicture);
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -91,18 +97,16 @@ const User = () => {
               src={profilePicture}
               className="w-40 h-40 hover:cursor-pointer hover:bg-purple-800 rounded-full object-cover"
               alt="Profile"
-              onClick={() =>
-                document.getElementById("profilePictureInput").click()
-              }
+              onClick={() => fileInputRef.current.click()}
             />
             <input
-              id="profilePictureInput"
+              ref={fileInputRef}
               type="file"
               accept="image/*"
               className="hidden"
             />
             <input
-              id="nameInput"
+              ref={nameInputRef}
               placeholder={`${nickname}`}
               className="w-[90%] bg-transparent text-center"
               onKeyDown={(e) => {
