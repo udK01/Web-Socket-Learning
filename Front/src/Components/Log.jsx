@@ -4,6 +4,7 @@ import { ImBin } from "react-icons/im";
 import { FaReply } from "react-icons/fa";
 
 import { useWebSocket } from "../WebSocketProvider";
+import { useUser } from "../UserProvider";
 
 export default function Log() {
   const [messageData, setMessageData] = useState([]);
@@ -12,6 +13,7 @@ export default function Log() {
   const menuRef = useRef(null);
 
   const { ws } = useWebSocket();
+  const { userID } = useUser();
 
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
@@ -91,16 +93,21 @@ export default function Log() {
           <ul
             ref={menuRef}
             tabIndex={0}
-            className="absolute bg-slate-800 z-50"
+            className="absolute bg-slate-800 border-2 border-slate-900 rounded-md z-50"
             style={{ top: menuPosition.y, left: menuPosition.x }}
             onBlur={handleBlur}
           >
             <li className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer">
               <FaReply /> Reply to {selectedMessage?.nickname}
             </li>
-            <li className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer text-red-500">
-              <ImBin /> Delete Message
-            </li>
+            {selectedMessage.userID === userID && (
+              <>
+                <div className="h-[1px] w-[95%] mx-auto bg-slate-900" />
+                <li className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer text-red-500">
+                  <ImBin /> Delete Message
+                </li>
+              </>
+            )}
           </ul>
         )}
         <div ref={messagesEndRef} />
