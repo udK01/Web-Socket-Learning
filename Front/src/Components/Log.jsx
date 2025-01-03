@@ -19,7 +19,7 @@ export default function Log() {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [reply, setReply] = useState(false);
+  const [reply, setReply] = useState(null);
 
   // History - Message Updater.
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function Log() {
 
   const handleReply = () => {
     setShowMenu(false);
-    setReply(true);
+    setReply(selectedMessage);
   };
 
   return (
@@ -127,12 +127,12 @@ export default function Log() {
           <div>
             Replying to
             <span className="text-white ml-1 hover:underline hover:cursor-pointer">
-              {selectedMessage.nickname}
+              {reply?.nickname}
             </span>
           </div>
           <div
             className="w-10 h-full flex items-center justify-center rounded-t-md bg-slate-950 hover:bg-black hover:cursor-pointer"
-            onClick={() => setReply(false)}
+            onClick={() => setReply(null)}
           >
             <IoIosClose className="size-10 hover:text-red-500 transition-colors duration-300 ease-in-out" />
           </div>
