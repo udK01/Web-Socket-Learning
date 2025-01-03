@@ -74,6 +74,50 @@ export default function Log() {
     setReply(selectedMessage);
   };
 
+  const RegularMessage = ({ msg }) => {
+    return (
+      <>
+        <div className="flex items-center gap-3">
+          <img
+            src={msg.profilePicture}
+            alt="Profile"
+            className="size-10 ring-1 ring-white rounded-full"
+          />
+          <span className="text-[16px] font-bold text-sm text-gray-300 hover:underline hover:cursor-pointer">
+            {msg.nickname}
+          </span>
+        </div>
+        <span>{msg.message}</span>
+      </>
+    );
+  };
+
+  const ReplyMessage = ({ msg }) => {
+    const parent = msg.parent;
+
+    return (
+      <>
+        <div>
+          <div className="ml-5 flex items-center gap-1">
+            <div className="border-l border-t w-7 h-3 border-gray-300 rounded-tl-lg" />
+            <img
+              src={parent.profilePicture}
+              alt="Profile"
+              className="size-5 ring-1 ring-white rounded-full"
+            />
+            <span className="text-[16px] font-bold text-sm text-gray-300 hover:underline hover:cursor-pointer">
+              {parent.nickname}
+            </span>
+            <span className="text-gray-300 line-clamp-1 text-ellipsis text-[12px]">
+              {parent.message}
+            </span>
+          </div>
+          <RegularMessage msg={msg} />
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="w-full h-full">
       <div
@@ -89,17 +133,11 @@ export default function Log() {
               className="mb-2 flex flex-col rounded-md p-2 hover:bg-slate-800 hover:cursor-pointer"
               onContextMenu={(e) => handleRightClick(e, msg)}
             >
-              <div className="flex items-center gap-3">
-                <img
-                  src={msg.profilePicture}
-                  alt="Profile"
-                  className="size-10 ring-1 ring-white rounded-full"
-                />
-                <span className="font-bold text-sm text-gray-300 hover:underline hover:cursor-pointer">
-                  {msg.nickname}
-                </span>
-              </div>
-              <span>{msg.message}</span>
+              {msg.parent === null ? (
+                <RegularMessage msg={msg} />
+              ) : (
+                <ReplyMessage msg={msg} />
+              )}
             </div>
           ))}
 
@@ -145,7 +183,7 @@ export default function Log() {
           </div>
         </div>
       )}
-      <SendMessage />
+      <SendMessage reply={reply} setReply={setReply} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useWebSocket } from "../WebSocketProvider";
 
-export default function SendMessage() {
+export default function SendMessage({ reply, setReply }) {
   const [message, setMessage] = useState("");
 
   const { ws } = useWebSocket();
@@ -10,12 +10,23 @@ export default function SendMessage() {
   // Message Handler
   const handleSendMessage = () => {
     if (message.trim() !== "" && ws) {
-      ws.send(
-        JSON.stringify({
-          type: "message",
-          message,
-        })
-      );
+      if (!reply) {
+        ws.send(
+          JSON.stringify({
+            type: "message",
+            message,
+          })
+        );
+      } else {
+        ws.send(
+          JSON.stringify({
+            type: "reply",
+            reply,
+            message,
+          })
+        );
+        setReply(null);
+      }
       setMessage("");
     }
   };

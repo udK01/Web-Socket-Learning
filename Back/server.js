@@ -65,6 +65,8 @@ wss.on("connection", (ws) => {
       handleMessages(userID, parsedData);
     } else if (parsedData.type === "update_user") {
       handleUserUpdated(userID, parsedData);
+    } else if (parsedData.type === "reply") {
+      handleReply(userID, parsedData);
     }
   });
 
@@ -92,6 +94,28 @@ function handleMessages(userID, parsedData) {
     userID: userID,
     nickname: users[userID].nickname,
     profilePicture: users[userID].profilePicture,
+    parent: null,
+    message: parsedData.message,
+  };
+
+  // Add To Log.
+  messages.push(fullMessage);
+
+  // Send Full Message To The Front.
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify({ type: "message", data: fullMessage }));
+    }
+  });
+}
+
+function handleReply(userID, parsedData) {
+  // Destructure Data Received.
+  const fullMessage = {
+    userID: userID,
+    nickname: users[userID].nickname,
+    profilePicture: users[userID].profilePicture,
+    parent: parsedData.reply,
     message: parsedData.message,
   };
 
