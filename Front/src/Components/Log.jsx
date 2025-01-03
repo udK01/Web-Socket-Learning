@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { ImBin } from "react-icons/im";
 import { FaReply } from "react-icons/fa";
+import { IoIosClose } from "react-icons/io";
 
 import { useWebSocket } from "../WebSocketProvider";
 import { useUser } from "../UserProvider";
@@ -18,6 +19,7 @@ export default function Log() {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [reply, setReply] = useState(false);
 
   // History - Message Updater.
   useEffect(() => {
@@ -64,9 +66,14 @@ export default function Log() {
     setSelectedMessage(null);
   };
 
+  const handleReply = () => {
+    setShowMenu(false);
+    setReply(true);
+  };
+
   return (
     <div className="w-full h-[90%]">
-      <div className="p-4 text-white h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent">
+      <div className="h-[92%] p-4 text-white overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent">
         {messageData
           .filter((msg) => msg !== undefined)
           .map((msg, index) => (
@@ -97,7 +104,10 @@ export default function Log() {
             style={{ top: menuPosition.y, left: menuPosition.x }}
             onBlur={handleBlur}
           >
-            <li className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer">
+            <li
+              className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer"
+              onClick={handleReply}
+            >
               <FaReply /> Reply to {selectedMessage?.nickname}
             </li>
             {selectedMessage.userID === userID && (
@@ -112,6 +122,22 @@ export default function Log() {
         )}
         <div ref={messagesEndRef} />
       </div>
+      {reply && (
+        <div className="w-full h-[8%] flex items-center justify-between rounded-t-md bg-slate-900 text-gray-300 pl-2">
+          <div>
+            Replying to
+            <span className="text-white ml-1 hover:underline hover:cursor-pointer">
+              {selectedMessage.nickname}
+            </span>
+          </div>
+          <div
+            className="w-10 h-full flex items-center justify-center rounded-t-md bg-slate-950 hover:bg-black hover:cursor-pointer"
+            onClick={() => setReply(false)}
+          >
+            <IoIosClose className="size-10 hover:text-red-500 transition-colors duration-300 ease-in-out" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
