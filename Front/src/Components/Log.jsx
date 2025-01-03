@@ -91,7 +91,7 @@ export default function Log() {
           <ul
             ref={menuRef}
             tabIndex={0}
-            className="absolute bg-slate-800 border border-slate-900 rounded shadow-lg z-50"
+            className="absolute bg-slate-800 z-50"
             style={{ top: menuPosition.y, left: menuPosition.x }}
             onBlur={handleBlur}
           >
