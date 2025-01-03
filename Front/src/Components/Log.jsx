@@ -7,6 +7,8 @@ import { IoIosClose } from "react-icons/io";
 import { useWebSocket } from "../WebSocketProvider";
 import { useUser } from "../UserProvider";
 
+import SendMessage from "./SendMessage";
+
 export default function Log() {
   const [messageData, setMessageData] = useState([]);
 
@@ -41,13 +43,14 @@ export default function Log() {
     }
   }, [ws]);
 
-  // Smooth Scroll
+  // Smooth Scroll.
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messageData]);
 
+  // Automatically Select Menu.
   useEffect(() => {
     if (showMenu && menuRef.current) {
       menuRef.current.focus();
@@ -72,8 +75,12 @@ export default function Log() {
   };
 
   return (
-    <div className="w-full h-[90%]">
-      <div className="h-[92%] p-4 text-white overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent">
+    <div className="w-full h-full">
+      <div
+        className={`${
+          reply ? "h-[82%]" : "h-[90%]"
+        } p-4 text-white overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent`}
+      >
         {messageData
           .filter((msg) => msg !== undefined)
           .map((msg, index) => (
@@ -138,6 +145,7 @@ export default function Log() {
           </div>
         </div>
       )}
+      <SendMessage />
     </div>
   );
 }

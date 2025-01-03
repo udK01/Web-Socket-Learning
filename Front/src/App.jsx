@@ -13,7 +13,6 @@ export default function App() {
         </div>
         <div className="w-[70%] bg-slate-700 ring-4 ring-slate-800 rounded-md">
           <Log />
-          <SendMessage />
         </div>
       </div>
     </section>
