@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -47,7 +48,7 @@ app.listen(PORT, () => {
 wss.on("connection", (ws) => {
   const userID = uuidv4();
   const nickname = "Anonymous";
-  const profilePicture = "logo.png";
+  const profilePicture = "base.png";
 
   console.log(`New client connected with ID: ${userID}`);
 
@@ -69,6 +70,18 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => {
     console.log(`Client with ID ${userID} has disconnected.`);
+
+    if (users[userID].profilePicture !== "base.png") {
+      const imagePath = `../Front/public/${users[userID].profilePicture}`;
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error(`Error deleting image: ${imagePath}`, err);
+        } else {
+          console.log(`Image deleted successfully: ${imagePath}`);
+        }
+      });
+    }
+
     delete users[userID];
   });
 });

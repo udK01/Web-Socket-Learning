@@ -8,7 +8,7 @@ export const UserProvider = ({ children }) => {
 
   const [userID, setUserID] = useState(null);
   const [nickname, setNickname] = useState("Anonymous");
-  const [profilePicture, setProfilePicture] = useState("logo.png");
+  const [profilePicture, setProfilePicture] = useState("base.png");
 
   useEffect(() => {
     if (!ws) return;
