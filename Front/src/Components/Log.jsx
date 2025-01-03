@@ -43,13 +43,16 @@ export default function Log() {
         {messageData
           .filter((msg) => msg !== undefined)
           .map((msg, index) => (
-            <div key={index} className="mb-2 flex flex-col">
+            <div
+              key={index}
+              className="mb-2 flex flex-col rounded-md p-2 hover:bg-slate-800 hover:cursor-pointer"
+            >
               <div className="flex items-center gap-3">
                 <img
                   src={msg.profilePicture}
                   className="size-10 ring-1 ring-white rounded-full"
                 />
-                <span className="font-bold text-sm text-gray-300">
+                <span className="font-bold text-sm text-gray-300 hover:underline hover:cursor-pointer">
                   {msg.nickname}
                 </span>
               </div>
