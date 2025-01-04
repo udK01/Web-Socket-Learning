@@ -72,7 +72,7 @@ wss.on("connection", (ws) => {
         handleReply(userID, parsedData);
         break;
       case "edit":
-        handleEdit(userID, parsedData);
+        handleEdit(parsedData);
         break;
       case "delete":
         handleDelete(parsedData);
@@ -155,6 +155,19 @@ function handleDelete(parsedData) {
   messages = messages.filter(
     (msg) => msg.messageID !== parsedData.selectedMessage.messageID
   );
+
+  updateHistory();
+}
+
+function handleEdit(parsedData) {
+  const messageID = parsedData.edit.messageID;
+  const newMessage = parsedData.message;
+
+  messages.forEach((msg) => {
+    if (msg.messageID === messageID) {
+      msg.message = newMessage;
+    }
+  });
 
   updateHistory();
 }

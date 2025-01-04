@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { ImBin } from "react-icons/im";
+import { FaEdit } from "react-icons/fa";
 import { FaReply } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
@@ -22,6 +23,7 @@ export default function Log() {
   const [showMenu, setShowMenu] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [reply, setReply] = useState(null);
+  const [edit, setEdit] = useState(null);
 
   // History - Message Updater.
   useEffect(() => {
@@ -74,6 +76,45 @@ export default function Log() {
     setReply(selectedMessage);
   };
 
+  const handleEdit = () => {
+    setShowMenu(false);
+    setEdit(selectedMessage);
+  };
+
+  const handleDelete = () => {
+    setShowMenu(false);
+    ws.send(
+      JSON.stringify({
+        type: "delete",
+        selectedMessage,
+      })
+    );
+  };
+
+  const renderBar = (type, text, action) => {
+    return (
+      <div className="w-full h-[8%] flex items-center justify-between rounded-t-md bg-slate-900 text-gray-300 pl-2">
+        <div>
+          {type === "reply" && (
+            <>
+              Replying to
+              <span className="text-white ml-1 hover:underline hover:cursor-pointer">
+                {text}
+              </span>
+            </>
+          )}
+          {type === "edit" && "Editing message..."}
+        </div>
+        <div
+          className="w-10 h-full flex items-center justify-center rounded-t-md bg-slate-950 hover:bg-black hover:cursor-pointer"
+          onClick={action}
+        >
+          <IoIosClose className="size-10 hover:text-red-500 transition-colors duration-300 ease-in-out" />
+        </div>
+      </div>
+    );
+  };
+
   const RegularMessage = ({ msg }) => {
     return (
       <>
@@ -118,21 +159,11 @@ export default function Log() {
     );
   };
 
-  function deleteMessage() {
-    setShowMenu(false);
-    ws.send(
-      JSON.stringify({
-        type: "delete",
-        selectedMessage,
-      })
-    );
-  }
-
   return (
     <div className="w-full h-full">
       <div
         className={`${
-          reply ? "h-[82%]" : "h-[90%]"
+          reply || edit ? "h-[82%]" : "h-[90%]"
         } p-4 text-white overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent`}
       >
         {messageData
@@ -169,8 +200,15 @@ export default function Log() {
               <>
                 <div className="h-[1px] w-[95%] mx-auto bg-slate-900" />
                 <li
+                  className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer"
+                  onClick={handleEdit}
+                >
+                  <FaEdit /> Edit Message
+                </li>
+                <div className="h-[1px] w-[95%] mx-auto bg-slate-900" />
+                <li
                   className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer text-red-500"
-                  onClick={deleteMessage}
+                  onClick={handleDelete}
                 >
                   <ImBin /> Delete Message
                 </li>
@@ -180,23 +218,16 @@ export default function Log() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      {reply && (
-        <div className="w-full h-[8%] flex items-center justify-between rounded-t-md bg-slate-900 text-gray-300 pl-2">
-          <div>
-            Replying to
-            <span className="text-white ml-1 hover:underline hover:cursor-pointer">
-              {reply?.nickname}
-            </span>
-          </div>
-          <div
-            className="w-10 h-full flex items-center justify-center rounded-t-md bg-slate-950 hover:bg-black hover:cursor-pointer"
-            onClick={() => setReply(null)}
-          >
-            <IoIosClose className="size-10 hover:text-red-500 transition-colors duration-300 ease-in-out" />
-          </div>
-        </div>
-      )}
-      <SendMessage reply={reply} setReply={setReply} />
+
+      {reply && renderBar("reply", reply?.nickname, () => setReply(null))}
+      {edit && renderBar("edit", null, () => setEdit(null))}
+
+      <SendMessage
+        reply={reply}
+        setReply={setReply}
+        edit={edit}
+        setEdit={setEdit}
+      />
     </div>
   );
 }
