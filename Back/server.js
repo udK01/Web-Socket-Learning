@@ -75,7 +75,7 @@ wss.on("connection", (ws) => {
         handleEdit(userID, parsedData);
         break;
       case "delete":
-        handleDelete(userID, parsedData);
+        handleDelete(parsedData);
         break;
     }
   });
@@ -101,6 +101,7 @@ wss.on("connection", (ws) => {
 function handleMessages(userID, parsedData) {
   // Destructure Data Received.
   const fullMessage = {
+    messageID: uuidv4(),
     userID: userID,
     nickname: users[userID].nickname,
     profilePicture: users[userID].profilePicture,
@@ -147,17 +148,15 @@ function handleUserUpdated(userID, parsedData) {
     }
   });
 
-  // Update Other User's Logs.
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(
-        JSON.stringify({
-          type: "history",
-          messages,
-        })
-      );
-    }
-  });
+  updateHistory();
+}
+
+function handleDelete(parsedData) {
+  messages = messages.filter(
+    (msg) => msg.messageID !== parsedData.selectedMessage.messageID
+  );
+
+  updateHistory();
 }
 
 function logMessage(fullMessage) {
@@ -168,6 +167,21 @@ function logMessage(fullMessage) {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify({ type: "message", data: fullMessage }));
+    }
+  });
+}
+
+function updateHistory() {
+  console.log(messages);
+  // Update Other User's Logs.
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(
+        JSON.stringify({
+          type: "history",
+          messages,
+        })
+      );
     }
   });
 }

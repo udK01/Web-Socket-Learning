@@ -118,6 +118,16 @@ export default function Log() {
     );
   };
 
+  function deleteMessage() {
+    setShowMenu(false);
+    ws.send(
+      JSON.stringify({
+        type: "delete",
+        selectedMessage,
+      })
+    );
+  }
+
   return (
     <div className="w-full h-full">
       <div
@@ -158,7 +168,10 @@ export default function Log() {
             {selectedMessage.userID === userID && (
               <>
                 <div className="h-[1px] w-[95%] mx-auto bg-slate-900" />
-                <li className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer text-red-500">
+                <li
+                  className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer text-red-500"
+                  onClick={deleteMessage}
+                >
                   <ImBin /> Delete Message
                 </li>
               </>
