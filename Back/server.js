@@ -98,15 +98,7 @@ function handleMessages(userID, parsedData) {
     message: parsedData.message,
   };
 
-  // Add To Log.
-  messages.push(fullMessage);
-
-  // Send Full Message To The Front.
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type: "message", data: fullMessage }));
-    }
-  });
+  logMessage(fullMessage);
 }
 
 function handleReply(userID, parsedData) {
@@ -119,15 +111,7 @@ function handleReply(userID, parsedData) {
     message: parsedData.message,
   };
 
-  // Add To Log.
-  messages.push(fullMessage);
-
-  // Send Full Message To The Front.
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type: "message", data: fullMessage }));
-    }
-  });
+  logMessage(fullMessage);
 }
 
 function handleUserUpdated(userID, parsedData) {
@@ -159,6 +143,18 @@ function handleUserUpdated(userID, parsedData) {
           messages,
         })
       );
+    }
+  });
+}
+
+function logMessage(fullMessage) {
+  // Add To Log.
+  messages.push(fullMessage);
+
+  // Send Full Message To The Front.
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify({ type: "message", data: fullMessage }));
     }
   });
 }
