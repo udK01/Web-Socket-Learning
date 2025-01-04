@@ -61,12 +61,22 @@ wss.on("connection", (ws) => {
   ws.on("message", (data) => {
     const parsedData = JSON.parse(data);
 
-    if (parsedData.type === "message") {
-      handleMessages(userID, parsedData);
-    } else if (parsedData.type === "update_user") {
-      handleUserUpdated(userID, parsedData);
-    } else if (parsedData.type === "reply") {
-      handleReply(userID, parsedData);
+    switch (parsedData.type) {
+      case "message":
+        handleMessages(userID, parsedData);
+        break;
+      case "update_user":
+        handleUserUpdated(userID, parsedData);
+        break;
+      case "reply":
+        handleReply(userID, parsedData);
+        break;
+      case "edit":
+        handleEdit(userID, parsedData);
+        break;
+      case "delete":
+        handleDelete(userID, parsedData);
+        break;
     }
   });
 
@@ -129,6 +139,9 @@ function handleUserUpdated(userID, parsedData) {
 
   // Alter Log.
   messages.forEach((msg) => {
+    if (msg.parent && msg.parent.userID === userID) {
+      msg.parent.nickname = updatedNickname;
+    }
     if (msg.userID === userID) {
       msg.nickname = updatedNickname;
     }
