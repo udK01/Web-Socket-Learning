@@ -52,16 +52,16 @@ module.exports = (users) => {
     ws.on("close", () => {
       console.log(`Client with ID ${userID} has disconnected.`);
 
-      if (users[userID]?.profilePicture !== "base.png") {
-        const imagePath = `../Front/public/${users[userID].profilePicture}`;
-        require("fs").unlink(imagePath, (err) => {
-          if (err) {
-            console.error(`Error deleting image: ${imagePath}`, err);
-          } else {
-            console.log(`Image deleted successfully: ${imagePath}`);
-          }
-        });
-      }
+      // if (users[userID]?.profilePicture !== "base.png") {
+      //   const imagePath = `../Front/public/${users[userID].profilePicture}`;
+      //   require("fs").unlink(imagePath, (err) => {
+      //     if (err) {
+      //       console.error(`Error deleting image: ${imagePath}`, err);
+      //     } else {
+      //       console.log(`Image deleted successfully: ${imagePath}`);
+      //     }
+      //   });
+      // }
 
       delete users[userID];
     });

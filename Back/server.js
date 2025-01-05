@@ -1,32 +1,18 @@
 // const WebSocket = require("ws");
 // const { v4: uuidv4 } = require("uuid");
-const dotenv = require("dotenv");
-
-const express = require("express");
+const { OAuth2Client } = require("google-auth-library");
 const session = require("express-session");
 const passport = require("passport");
-const { OAuth2Client } = require("google-auth-library");
-
-const multer = require("multer");
+const express = require("express");
+const dotenv = require("dotenv");
 const cors = require("cors");
-const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "../Front/public/");
-  },
-  filename: (req, file, cb) => {
-    const currentTimeInMillis = Date.now();
-    const uniqueName = `${currentTimeInMillis}${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
+const { profileUpload } = require("./routes/upload");
 
-const upload = multer({ storage });
+dotenv.config();
 const app = express();
 const PORT = 3000;
 
-dotenv.config();
 app.use(express.json());
 app.use(cors());
 app.use(
@@ -39,8 +25,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// const wss = new WebSocket.Server({ port: 8080 });
-// let messages = [];
 let users = {};
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -73,7 +57,7 @@ app.post("/api/auth/google", async (req, res) => {
 });
 
 // Express Route for File Upload
-app.post("/upload", upload.single("file"), (req, res) => {
+app.post("/upload", profileUpload, (req, res) => {
   const userID = req.body.userID;
 
   if (!req.file || !userID) {
