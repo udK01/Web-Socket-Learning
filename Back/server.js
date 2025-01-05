@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const { OAuth2Client } = require("google-auth-library");
 
 const multer = require("multer");
 const cors = require("cors");
@@ -27,6 +27,7 @@ const app = express();
 const PORT = 3000;
 
 dotenv.config();
+app.use(express.json());
 app.use(cors());
 app.use(
   session({
@@ -41,6 +42,35 @@ app.use(passport.session());
 const wss = new WebSocket.Server({ port: 8080 });
 let messages = [];
 let users = {};
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Google Auth
+app.post("/api/auth/google", async (req, res) => {
+  const { token, userID } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ error: "Token is required" });
+  }
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const { name, picture } = payload;
+    users[userID].nickname = name;
+    users[userID].profilePicture = picture;
+
+    res.json({ message: "Login successful", user: payload });
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    res.status(400).json({ error: "Invalid token" });
+  }
+});
 
 // Express Route for File Upload
 app.post("/upload", upload.single("file"), (req, res) => {
