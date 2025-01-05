@@ -1,13 +1,12 @@
-// const WebSocket = require("ws");
-// const { v4: uuidv4 } = require("uuid");
-const { OAuth2Client } = require("google-auth-library");
 const session = require("express-session");
 const passport = require("passport");
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
+const initializeWebSocket = require("./ws/websocket");
 const { profileUpload } = require("./routes/upload");
+const { googleAuth } = require("./routes/googleAuth");
 
 dotenv.config();
 const app = express();
@@ -27,32 +26,16 @@ app.use(passport.session());
 
 let users = {};
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
 // Google Auth
-app.post("/api/auth/google", async (req, res) => {
-  const { token, userID } = req.body;
+app.post("/api/auth/google", googleAuth(users), (req, res) => {
+  const { userID } = req.body;
+  const user = req.user; // Get user from the request object
 
-  if (!token) {
-    return res.status(400).json({ error: "Token is required" });
-  }
-
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-
-    const { name, picture } = payload;
-    users[userID].nickname = name;
-    users[userID].profilePicture = picture;
-
-    res.json({ message: "Login successful", user: payload });
-  } catch (error) {
-    console.error("Error verifying token:", error);
-    res.status(400).json({ error: "Invalid token" });
+  // Respond with the user information if login is successful
+  if (userID) {
+    res.json({ message: "Login successful", user });
+  } else {
+    res.status(400).json({ error: "User ID is missing" });
   }
 });
 
@@ -73,8 +56,6 @@ app.post("/upload", profileUpload, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Express server running on http://localhost:${PORT}`);
 });
-
-const initializeWebSocket = require("./ws/websocket");
 
 initializeWebSocket(users);
 
