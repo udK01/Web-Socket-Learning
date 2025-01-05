@@ -11,13 +11,13 @@ export default function GoogleAuth() {
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      <div>
-        <h1>Login with Google</h1>
-        <GoogleLogin
-          onSuccess={handleLogin}
-          onError={() => console.log("Login Failed")}
-        />
-      </div>
+      <GoogleLogin
+        onSuccess={handleLogin}
+        onError={() => console.log("Login Failed")}
+        theme="outline"
+        size="large"
+        shape="circle"
+      />
     </GoogleOAuthProvider>
   );
 }

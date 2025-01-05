@@ -1,7 +1,12 @@
 const WebSocket = require("ws");
 const { v4: uuidv4 } = require("uuid");
+const dotenv = require("dotenv");
 
 const express = require("express");
+const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
 const multer = require("multer");
 const cors = require("cors");
 const fs = require("fs");
@@ -21,7 +26,17 @@ const upload = multer({ storage });
 const app = express();
 const PORT = 3000;
 
+dotenv.config();
 app.use(cors());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 const wss = new WebSocket.Server({ port: 8080 });
 let messages = [];
