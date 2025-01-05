@@ -1,5 +1,5 @@
-const WebSocket = require("ws");
-const { v4: uuidv4 } = require("uuid");
+// const WebSocket = require("ws");
+// const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 
 const express = require("express");
@@ -39,8 +39,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const wss = new WebSocket.Server({ port: 8080 });
-let messages = [];
+// const wss = new WebSocket.Server({ port: 8080 });
+// let messages = [];
 let users = {};
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -90,156 +90,160 @@ app.listen(PORT, () => {
   console.log(`Express server running on http://localhost:${PORT}`);
 });
 
-wss.on("connection", (ws) => {
-  const userID = uuidv4();
-  const nickname = "Anonymous";
-  const profilePicture = "base.png";
+const initializeWebSocket = require("./ws/websocket");
 
-  console.log(`New client connected with ID: ${userID}`);
+initializeWebSocket(users);
 
-  users[userID] = { nickname, profilePicture };
+// wss.on("connection", (ws) => {
+//   const userID = uuidv4();
+//   const nickname = "Anonymous";
+//   const profilePicture = "base.png";
 
-  // Initialise User & Chat Logs.
-  ws.send(JSON.stringify({ type: "history", messages }));
-  ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
+//   console.log(`New client connected with ID: ${userID}`);
 
-  ws.on("message", (data) => {
-    const parsedData = JSON.parse(data);
+//   users[userID] = { nickname, profilePicture };
 
-    switch (parsedData.type) {
-      case "message":
-        handleMessages(userID, parsedData);
-        break;
-      case "update_user":
-        handleUserUpdated(userID, parsedData);
-        break;
-      case "reply":
-        handleReply(userID, parsedData);
-        break;
-      case "edit":
-        handleEdit(parsedData);
-        break;
-      case "delete":
-        handleDelete(parsedData);
-        break;
-    }
-  });
+//   // Initialise User & Chat Logs.
+//   ws.send(JSON.stringify({ type: "history", messages }));
+//   ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
 
-  ws.on("close", () => {
-    console.log(`Client with ID ${userID} has disconnected.`);
+//   ws.on("message", (data) => {
+//     const parsedData = JSON.parse(data);
 
-    if (users[userID].profilePicture !== "base.png") {
-      const imagePath = `../Front/public/${users[userID].profilePicture}`;
-      fs.unlink(imagePath, (err) => {
-        if (err) {
-          console.error(`Error deleting image: ${imagePath}`, err);
-        } else {
-          console.log(`Image deleted successfully: ${imagePath}`);
-        }
-      });
-    }
+//     switch (parsedData.type) {
+//       case "message":
+//         handleMessages(userID, parsedData);
+//         break;
+//       case "update_user":
+//         handleUserUpdated(userID, parsedData);
+//         break;
+//       case "reply":
+//         handleReply(userID, parsedData);
+//         break;
+//       case "edit":
+//         handleEdit(parsedData);
+//         break;
+//       case "delete":
+//         handleDelete(parsedData);
+//         break;
+//     }
+//   });
 
-    delete users[userID];
-  });
-});
+//   ws.on("close", () => {
+//     console.log(`Client with ID ${userID} has disconnected.`);
 
-function handleMessages(userID, parsedData) {
-  // Destructure Data Received.
-  const fullMessage = {
-    messageID: uuidv4(),
-    userID: userID,
-    nickname: users[userID].nickname,
-    profilePicture: users[userID].profilePicture,
-    parent: null,
-    message: parsedData.message,
-  };
+//     if (users[userID].profilePicture !== "base.png") {
+//       const imagePath = `../Front/public/${users[userID].profilePicture}`;
+//       fs.unlink(imagePath, (err) => {
+//         if (err) {
+//           console.error(`Error deleting image: ${imagePath}`, err);
+//         } else {
+//           console.log(`Image deleted successfully: ${imagePath}`);
+//         }
+//       });
+//     }
 
-  logMessage(fullMessage);
-}
+//     delete users[userID];
+//   });
+// });
 
-function handleReply(userID, parsedData) {
-  // Destructure Data Received.
-  const fullMessage = {
-    userID: userID,
-    nickname: users[userID].nickname,
-    profilePicture: users[userID].profilePicture,
-    parent: parsedData.reply,
-    message: parsedData.message,
-  };
+// function handleMessages(userID, parsedData) {
+//   // Destructure Data Received.
+//   const fullMessage = {
+//     messageID: uuidv4(),
+//     userID: userID,
+//     nickname: users[userID].nickname,
+//     profilePicture: users[userID].profilePicture,
+//     parent: null,
+//     message: parsedData.message,
+//   };
 
-  logMessage(fullMessage);
-}
+//   logMessage(fullMessage);
+// }
 
-function handleUserUpdated(userID, parsedData) {
-  // Destructure Data Received.
-  const {
-    updatedNickname: updatedNickname,
-    updatedProfilePicture: updatedProfilePicture,
-  } = parsedData;
+// function handleReply(userID, parsedData) {
+//   // Destructure Data Received.
+//   const fullMessage = {
+//     userID: userID,
+//     nickname: users[userID].nickname,
+//     profilePicture: users[userID].profilePicture,
+//     parent: parsedData.reply,
+//     message: parsedData.message,
+//   };
 
-  // Alter User.
-  if (users[userID]) {
-    users[userID].nickname = updatedNickname;
-    users[userID].profilePicture = updatedProfilePicture;
-  }
+//   logMessage(fullMessage);
+// }
 
-  // Alter Log.
-  messages.forEach((msg) => {
-    if (msg.parent && msg.parent.userID === userID) {
-      msg.parent.nickname = updatedNickname;
-    }
-    if (msg.userID === userID) {
-      msg.nickname = updatedNickname;
-    }
-  });
+// function handleUserUpdated(userID, parsedData) {
+//   // Destructure Data Received.
+//   const {
+//     updatedNickname: updatedNickname,
+//     updatedProfilePicture: updatedProfilePicture,
+//   } = parsedData;
 
-  updateHistory();
-}
+//   // Alter User.
+//   if (users[userID]) {
+//     users[userID].nickname = updatedNickname;
+//     users[userID].profilePicture = updatedProfilePicture;
+//   }
 
-function handleDelete(parsedData) {
-  messages = messages.filter(
-    (msg) => msg.messageID !== parsedData.selectedMessage.messageID
-  );
+//   // Alter Log.
+//   messages.forEach((msg) => {
+//     if (msg.parent && msg.parent.userID === userID) {
+//       msg.parent.nickname = updatedNickname;
+//     }
+//     if (msg.userID === userID) {
+//       msg.nickname = updatedNickname;
+//     }
+//   });
 
-  updateHistory();
-}
+//   updateHistory();
+// }
 
-function handleEdit(parsedData) {
-  const messageID = parsedData.edit.messageID;
-  const newMessage = parsedData.message;
+// function handleDelete(parsedData) {
+//   messages = messages.filter(
+//     (msg) => msg.messageID !== parsedData.selectedMessage.messageID
+//   );
 
-  messages.forEach((msg) => {
-    if (msg.messageID === messageID) {
-      msg.message = newMessage;
-    }
-  });
+//   updateHistory();
+// }
 
-  updateHistory();
-}
+// function handleEdit(parsedData) {
+//   const messageID = parsedData.edit.messageID;
+//   const newMessage = parsedData.message;
 
-function logMessage(fullMessage) {
-  // Add To Log.
-  messages.push(fullMessage);
+//   messages.forEach((msg) => {
+//     if (msg.messageID === messageID) {
+//       msg.message = newMessage;
+//     }
+//   });
 
-  // Send Full Message To The Front.
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type: "message", data: fullMessage }));
-    }
-  });
-}
+//   updateHistory();
+// }
 
-function updateHistory() {
-  console.log(messages);
-  // Update Other User's Logs.
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(
-        JSON.stringify({
-          type: "history",
-          messages,
-        })
-      );
-    }
-  });
-}
+// function logMessage(fullMessage) {
+//   // Add To Log.
+//   messages.push(fullMessage);
+
+//   // Send Full Message To The Front.
+//   wss.clients.forEach((client) => {
+//     if (client.readyState === WebSocket.OPEN) {
+//       client.send(JSON.stringify({ type: "message", data: fullMessage }));
+//     }
+//   });
+// }
+
+// function updateHistory() {
+//   console.log(messages);
+//   // Update Other User's Logs.
+//   wss.clients.forEach((client) => {
+//     if (client.readyState === WebSocket.OPEN) {
+//       client.send(
+//         JSON.stringify({
+//           type: "history",
+//           messages,
+//         })
+//       );
+//     }
+//   });
+// }
