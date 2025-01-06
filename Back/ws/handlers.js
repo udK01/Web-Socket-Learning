@@ -23,6 +23,7 @@ function handleMessages(userID, parsedData, users, messages, wss) {
 function handleReply(userID, parsedData, users, messages, wss) {
   // Destructure Data Received.
   const fullMessage = {
+    messageID: uuidv4(),
     userID: userID,
     nickname: users[userID].nickname,
     profilePicture: users[userID].profilePicture,
@@ -60,11 +61,14 @@ function handleUserUpdated(userID, parsedData, users, messages, wss) {
 }
 
 function handleDelete(parsedData, messages, wss) {
-  messages = messages.filter(
+  const filteredMessages = messages.filter(
     (msg) => msg.messageID !== parsedData.selectedMessage.messageID
   );
 
-  updateHistory(messages, wss);
+  messages.length = 0;
+  messages.push(...filteredMessages);
+
+  updateHistory(filteredMessages, wss);
 }
 
 function handleEdit(parsedData, messages, wss) {
