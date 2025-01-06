@@ -10,10 +10,10 @@ export default function SendMessage({ reply, setReply, edit, setEdit }) {
 
   // Automatically Select Input Field On Edit.
   useEffect(() => {
-    if (edit && inputRef.current) {
+    if ((edit || reply) && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [edit]);
+  }, [edit, reply]);
 
   // Message Handler
   const handleSendMessage = () => {
