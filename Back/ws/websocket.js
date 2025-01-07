@@ -6,8 +6,6 @@ const {
   handleUserUpdated,
   handleDelete,
   handleEdit,
-  logMessage,
-  updateHistory,
 } = require("./handlers");
 
 module.exports = (users) => {
