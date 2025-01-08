@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
+import { useWebSocket } from "../WebSocketProvider";
 
 export default function ChatGroups() {
   const [groups, setGroups] = useState([]);
@@ -7,6 +8,26 @@ export default function ChatGroups() {
   const [selectedGroup, setSelectedGroup] = useState(null);
 
   const groupRef = useRef(null);
+
+  const { ws } = useWebSocket();
+
+  useEffect(() => {
+    if (ws) {
+      const handleMessage = ({ data }) => {
+        const parsedData = JSON.parse(data);
+
+        if (parsedData.type === "groups") {
+          setGroups(parsedData.groups);
+        }
+      };
+
+      ws.addEventListener("message", handleMessage);
+
+      return () => {
+        ws.removeEventListener("message", handleMessage);
+      };
+    }
+  }, [ws]);
 
   const DisplayGroup = ({ imgSrc, groupName }) => {
     return (
@@ -50,15 +71,25 @@ export default function ChatGroups() {
     let groupName = groupRef.current.value;
 
     if (groupName.trim()) {
+      ws.send(
+        JSON.stringify({
+          type: "create_group",
+          groupName,
+        })
+      );
     }
   }
 
   return (
     <div className="w-full h-[90%] flex flex-col text-white overflow-auto scrollbar-none">
-      <DisplayGroup imgSrc={"./vite.svg"} groupName={"Test"} />
-      <DisplayGroup imgSrc={"./vite.svg"} groupName={"Tesesesesest"} />
-      <DisplayGroup imgSrc={"./vite.svg"} groupName={"AppleAppleApple"} />
-
+      {groups &&
+        groups.map((group, i) => (
+          <DisplayGroup
+            key={i}
+            imgSrc={group.groupImg}
+            groupName={group.groupName}
+          />
+        ))}
       <div className="flex justify-center items-center space-y-40">
         <CiCirclePlus
           className="text-[48px] hover:cursor-pointer hover:text-orange-500 transition-colors duration-300"

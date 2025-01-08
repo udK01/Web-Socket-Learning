@@ -34,6 +34,19 @@ function handleReply(userID, parsedData, users, messages, wss) {
   logMessage(fullMessage, messages, wss);
 }
 
+function handleCreateGroup(userID, parsedData, groups, wss) {
+  const group = {
+    groupID: uuidv4(),
+    groupOwner: userID,
+    groupName: parsedData.groupName,
+    groupImg: "./vite.svg",
+    messages: [],
+  };
+
+  groups.push(group);
+  updateGroups(groups, wss);
+}
+
 function handleUserUpdated(userID, parsedData, users, messages, wss) {
   // Destructure Data Received.
   const {
@@ -110,10 +123,25 @@ function updateHistory(messages, wss) {
   });
 }
 
+function updateGroups(groups, wss) {
+  // Update Other User's Logs.
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(
+        JSON.stringify({
+          type: "groups",
+          groups,
+        })
+      );
+    }
+  });
+}
+
 module.exports = {
   handleMessages,
   handleReply,
   handleUserUpdated,
   handleDelete,
   handleEdit,
+  handleCreateGroup,
 };

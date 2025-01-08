@@ -6,11 +6,11 @@ const {
   handleUserUpdated,
   handleDelete,
   handleEdit,
+  handleCreateGroup,
 } = require("./handlers");
 
-module.exports = (users) => {
+module.exports = (users, groups) => {
   const wss = new WebSocket.Server({ port: 8080 });
-  let groups = [];
   let messages = [];
 
   wss.on("connection", (ws) => {
@@ -23,6 +23,7 @@ module.exports = (users) => {
     users[userID] = { nickname, profilePicture };
 
     // Send initial data to the client
+    ws.send(JSON.stringify({ type: "groups", groups }));
     ws.send(JSON.stringify({ type: "history", messages }));
     ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
 
@@ -44,6 +45,9 @@ module.exports = (users) => {
           break;
         case "delete":
           handleDelete(parsedData, messages, wss);
+          break;
+        case "create_group":
+          handleCreateGroup(userID, parsedData, groups, wss);
           break;
       }
     });

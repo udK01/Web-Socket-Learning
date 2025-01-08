@@ -25,6 +25,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 let users = {};
+let groups = [];
 
 // Google Auth
 app.post("/api/auth/google", googleAuth(users), (req, res) => {
@@ -57,7 +58,7 @@ app.listen(PORT, () => {
   console.log(`Express server running on http://localhost:${PORT}`);
 });
 
-initializeWebSocket(users);
+initializeWebSocket(users, groups);
 
 // wss.on("connection", (ws) => {
 //   const userID = uuidv4();
