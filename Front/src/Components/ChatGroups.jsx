@@ -21,13 +21,13 @@ export default function ChatGroups() {
 
   const CreateGroupUI = () => {
     return (
-      <div className="absolute bg-[#302c34] w-[15%] flex flex-col justify-center items-center ring-4 rounded-md ring-[#1c1c1c]">
+      <div className="absolute min-w-[200px] bg-[#302c34] w-[15%] flex flex-col justify-center items-center ring-4 rounded-md ring-[#1c1c1c]">
         <input
           ref={groupRef}
           placeholder="Group Name"
           className="w-[90%] h-fit text-center rounded-md bg-transparent m-3 ring-2 placeholder-white ring-[#1c1c1c]"
         />
-        <div className="w-full flex justify-end">
+        <div className="w-full flex justify-between px-1">
           <button
             className="bg-purple-500 rounded-md py-1 m-2 px-5 hover:cursor-pointer hover:bg-purple-700 transition-colors duration-300"
             onClick={() => setShowCreate(false)}
