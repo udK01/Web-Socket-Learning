@@ -1,22 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { useWebSocket } from "../WebSocketProvider";
 import { useGroup } from "../GroupProvider";
 
 export default function ChatGroups() {
-  const { groups, setSelectedGroup } = useGroup();
+  const { groups, selectedGroup, setSelectedGroup } = useGroup();
 
   const [showCreate, setShowCreate] = useState(false);
   const groupRef = useRef(null);
 
   const { ws } = useWebSocket();
 
-  const DisplayGroup = ({ imgSrc, groupName }) => {
+  const DisplayGroup = ({ group }) => {
     return (
-      <div className="h-[10%] flex items-center gap-5 py-2 px-4 border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300">
-        <img src={imgSrc} />
+      <div
+        className={`h-[10%] flex items-center gap-5 py-2 px-4 border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300 ${
+          group.groupID === selectedGroup?.groupID ? "bg-slate-800" : ""
+        }`}
+        onClick={() => setSelectedGroup(group)}
+      >
+        <img src={group.groupImg} />
         <div className="text-[20px] line-clamp-1 text-ellipsis">
-          {groupName}
+          {group.groupName}
         </div>
       </div>
     );
@@ -65,14 +70,7 @@ export default function ChatGroups() {
   return (
     <div className="w-full h-[90%] flex flex-col text-white overflow-auto scrollbar-none">
       {groups &&
-        groups.map((group, i) => (
-          <DisplayGroup
-            key={i}
-            imgSrc={group.groupImg}
-            groupName={group.groupName}
-            onClick={() => setSelectedGroup(group)}
-          />
-        ))}
+        groups.map((group, i) => <DisplayGroup key={i} group={group} />)}
       <div className="flex justify-center items-center space-y-40">
         <CiCirclePlus
           className="text-[48px] hover:cursor-pointer hover:text-orange-500 transition-colors duration-300"

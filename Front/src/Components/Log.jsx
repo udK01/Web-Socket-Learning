@@ -6,6 +6,7 @@ import { FaReply } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 import { useWebSocket } from "../WebSocketProvider";
+import { useGroup } from "../GroupProvider";
 import { useUser } from "../UserProvider";
 
 import SendMessage from "./SendMessage";
@@ -18,32 +19,46 @@ export default function Log() {
 
   const { ws } = useWebSocket();
   const { userID } = useUser();
+  const { groups, selectedGroup } = useGroup();
 
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
+
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [reply, setReply] = useState(null);
   const [edit, setEdit] = useState(null);
 
-  // History - Message Updater.
   useEffect(() => {
-    if (ws) {
+    if (ws && selectedGroup) {
       const handleMessage = ({ data }) => {
         const parsedData = JSON.parse(data);
-        if (parsedData.type === "history") {
-          setMessageData(parsedData.messages);
-        } else {
-          setMessageData((prevMessages) => [...prevMessages, parsedData.data]);
+
+        if (parsedData.type === "message") {
+          const { groupID } = parsedData.data;
+
+          const targetGroup = groups.find((group) => group.groupID === groupID);
+
+          if (targetGroup) {
+            targetGroup.messages = [...targetGroup.messages, parsedData.data];
+
+            if (selectedGroup && selectedGroup.groupID === groupID) {
+              setMessageData(targetGroup.messages);
+            }
+          }
         }
       };
+
+      setMessageData(selectedGroup.messages);
 
       ws.addEventListener("message", handleMessage);
 
       return () => {
         ws.removeEventListener("message", handleMessage);
       };
+    } else if (!selectedGroup) {
+      setMessageData([]);
     }
-  }, [ws]);
+  }, [ws, selectedGroup]);
 
   // Smooth Scroll.
   useEffect(() => {
@@ -222,12 +237,14 @@ export default function Log() {
       {reply && renderBar("reply", reply?.nickname, () => setReply(null))}
       {edit && renderBar("edit", null, () => setEdit(null))}
 
-      <SendMessage
-        reply={reply}
-        setReply={setReply}
-        edit={edit}
-        setEdit={setEdit}
-      />
+      {selectedGroup && (
+        <SendMessage
+          reply={reply}
+          setReply={setReply}
+          edit={edit}
+          setEdit={setEdit}
+        />
+      )}
     </div>
   );
 }

@@ -24,7 +24,6 @@ module.exports = (users, groups) => {
 
     // Send initial data to the client
     ws.send(JSON.stringify({ type: "groups", groups }));
-    ws.send(JSON.stringify({ type: "history", messages }));
     ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
 
     ws.on("message", (data) => {
@@ -32,13 +31,13 @@ module.exports = (users, groups) => {
 
       switch (parsedData.type) {
         case "message":
-          handleMessages(userID, parsedData, users, messages, wss);
+          handleMessages(userID, parsedData, users, groups, wss);
           break;
         case "update_user":
           handleUserUpdated(userID, parsedData, users, messages, wss);
           break;
         case "reply":
-          handleReply(userID, parsedData, users, messages, wss);
+          handleReply(userID, parsedData, users, groups, wss);
           break;
         case "edit":
           handleEdit(parsedData, messages, wss);

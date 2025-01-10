@@ -1,9 +1,10 @@
 const WebSocket = require("ws");
 const { v4: uuidv4 } = require("uuid");
 
-function handleMessages(userID, parsedData, users, messages, wss) {
+function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
     messageID: uuidv4(),
+    groupID: parsedData.groupID,
     userID,
     nickname: users[userID].nickname,
     profilePicture: users[userID].profilePicture,
@@ -11,16 +12,10 @@ function handleMessages(userID, parsedData, users, messages, wss) {
     message: parsedData.message,
   };
 
-  messages.push(fullMessage);
-
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type: "message", data: fullMessage }));
-    }
-  });
+  logMessage(fullMessage, groups, wss);
 }
 
-function handleReply(userID, parsedData, users, messages, wss) {
+function handleReply(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const fullMessage = {
     messageID: uuidv4(),
@@ -31,7 +26,9 @@ function handleReply(userID, parsedData, users, messages, wss) {
     message: parsedData.message,
   };
 
-  logMessage(fullMessage, messages, wss);
+  const groupID = parsedData.groupID;
+
+  logMessage(fullMessage, groups, groupID, wss);
 }
 
 function handleCreateGroup(userID, parsedData, groups, wss) {
@@ -97,9 +94,11 @@ function handleEdit(parsedData, messages, wss) {
   updateHistory(messages, wss);
 }
 
-function logMessage(fullMessage, messages, wss) {
+function logMessage(fullMessage, groups, wss) {
   // Add To Log.
-  messages.push(fullMessage);
+  groups
+    .find((group) => group.groupID === fullMessage.groupID)
+    .messages.push(fullMessage);
 
   // Send Full Message To The Front.
   wss.clients.forEach((client) => {

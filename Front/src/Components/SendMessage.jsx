@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useWebSocket } from "../WebSocketProvider";
+import { useGroup } from "../GroupProvider";
 
 export default function SendMessage({ reply, setReply, edit, setEdit }) {
   const [message, setMessage] = useState("");
   const inputRef = useRef(null);
 
   const { ws } = useWebSocket();
+  const { selectedGroup } = useGroup();
 
   // Automatically Select Input Field On Edit.
   useEffect(() => {
@@ -22,6 +24,7 @@ export default function SendMessage({ reply, setReply, edit, setEdit }) {
         ws.send(
           JSON.stringify({
             type: "reply",
+            groupID: selectedGroup.groupID,
             reply,
             message,
           })
@@ -31,6 +34,7 @@ export default function SendMessage({ reply, setReply, edit, setEdit }) {
         ws.send(
           JSON.stringify({
             type: "edit",
+            groupID: selectedGroup.groupID,
             edit,
             message,
           })
@@ -40,6 +44,7 @@ export default function SendMessage({ reply, setReply, edit, setEdit }) {
         ws.send(
           JSON.stringify({
             type: "message",
+            groupID: selectedGroup.groupID,
             message,
           })
         );
