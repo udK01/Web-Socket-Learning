@@ -1,33 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { useWebSocket } from "../WebSocketProvider";
+import { useGroup } from "../GroupProvider";
 
 export default function ChatGroups() {
-  const [groups, setGroups] = useState([]);
-  const [showCreate, setShowCreate] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null);
+  const { groups, setSelectedGroup } = useGroup();
 
+  const [showCreate, setShowCreate] = useState(false);
   const groupRef = useRef(null);
 
   const { ws } = useWebSocket();
-
-  useEffect(() => {
-    if (ws) {
-      const handleMessage = ({ data }) => {
-        const parsedData = JSON.parse(data);
-
-        if (parsedData.type === "groups") {
-          setGroups(parsedData.groups);
-        }
-      };
-
-      ws.addEventListener("message", handleMessage);
-
-      return () => {
-        ws.removeEventListener("message", handleMessage);
-      };
-    }
-  }, [ws]);
 
   const DisplayGroup = ({ imgSrc, groupName }) => {
     return (
@@ -88,6 +70,7 @@ export default function ChatGroups() {
             key={i}
             imgSrc={group.groupImg}
             groupName={group.groupName}
+            onClick={() => setSelectedGroup(group)}
           />
         ))}
       <div className="flex justify-center items-center space-y-40">

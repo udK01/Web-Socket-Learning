@@ -1,4 +1,5 @@
 import { WebSocketProvider } from "./WebSocketProvider.jsx";
+import { GroupProvider } from "./GroupProvider.jsx";
 import { UserProvider } from "./UserProvider.jsx";
 
 import { createRoot } from "react-dom/client";
@@ -11,7 +12,9 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <WebSocketProvider>
       <UserProvider>
-        <App />
+        <GroupProvider>
+          <App />
+        </GroupProvider>
       </UserProvider>
     </WebSocketProvider>
   </StrictMode>
