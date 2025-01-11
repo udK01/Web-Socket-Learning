@@ -45,6 +45,13 @@ export default function Log() {
               setMessageData(targetGroup.messages);
             }
           }
+        } else if (parsedData.type === "edited_messages") {
+          setMessageData(parsedData.messages);
+          selectedGroup.messages = [...parsedData.messages];
+          groups.find(
+            (group) => selectedGroup.groupID === group.groupID
+          ).messages = [...parsedData.messages];
+          console.log(selectedGroup);
         }
       };
 

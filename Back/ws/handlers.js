@@ -69,15 +69,19 @@ function handleUserUpdated(userID, parsedData, users, messages, wss) {
   updateHistory(messages, wss);
 }
 
-function handleDelete(parsedData, messages, wss) {
-  const filteredMessages = messages.filter(
-    (msg) => msg.messageID !== parsedData.selectedMessage.messageID
-  );
+function handleDelete(parsedData, groups, wss) {
+  const { groupID, messageID } = parsedData.selectedMessage;
+  const group = groups.find((group) => group.groupID === groupID);
 
-  messages.length = 0;
-  messages.push(...filteredMessages);
+  if (group) {
+    const filteredMessages = group.messages.filter(
+      (msg) => msg.messageID !== messageID
+    );
 
-  updateHistory(filteredMessages, wss);
+    group.messages = [...filteredMessages];
+
+    updateHistory(filteredMessages, wss);
+  }
 }
 
 function handleEdit(parsedData, messages, wss) {
@@ -113,7 +117,7 @@ function updateHistory(messages, wss) {
     if (client.readyState === WebSocket.OPEN) {
       client.send(
         JSON.stringify({
-          type: "history",
+          type: "edited_messages",
           messages,
         })
       );
