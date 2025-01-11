@@ -51,7 +51,6 @@ export default function Log() {
           groups.find(
             (group) => selectedGroup.groupID === group.groupID
           ).messages = [...parsedData.messages];
-          console.log(selectedGroup);
         }
       };
 
