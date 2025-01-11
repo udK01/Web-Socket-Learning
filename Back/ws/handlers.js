@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4, parse } = require("uuid");
 
 function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
@@ -19,6 +19,7 @@ function handleReply(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const fullMessage = {
     messageID: uuidv4(),
+    groupID: parsedData.groupID,
     userID: userID,
     nickname: users[userID].nickname,
     profilePicture: users[userID].profilePicture,
@@ -26,9 +27,7 @@ function handleReply(userID, parsedData, users, groups, wss) {
     message: parsedData.message,
   };
 
-  const groupID = parsedData.groupID;
-
-  logMessage(fullMessage, groups, groupID, wss);
+  logMessage(fullMessage, groups, wss);
 }
 
 function handleCreateGroup(userID, parsedData, groups, wss) {
