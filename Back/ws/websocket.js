@@ -40,7 +40,7 @@ module.exports = (users, groups) => {
           handleReply(userID, parsedData, users, groups, wss);
           break;
         case "edit":
-          handleEdit(parsedData, messages, wss);
+          handleEdit(parsedData, groups, wss);
           break;
         case "delete":
           handleDelete(parsedData, groups, wss);

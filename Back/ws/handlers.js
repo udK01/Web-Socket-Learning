@@ -84,17 +84,35 @@ function handleDelete(parsedData, groups, wss) {
   }
 }
 
-function handleEdit(parsedData, messages, wss) {
-  const messageID = parsedData.edit.messageID;
+function handleEdit(parsedData, groups, wss) {
+  const { messageID, groupID } = parsedData.edit;
   const newMessage = parsedData.message;
 
-  messages.forEach((msg) => {
-    if (msg.messageID === messageID) {
-      msg.message = newMessage;
-    }
-  });
+  const group = groups.find((group) => group.groupID === groupID);
 
-  updateHistory(messages, wss);
+  if (group) {
+    // Update the target message
+    group.messages = group.messages.map((msg) =>
+      msg.messageID === messageID ? { ...msg, message: newMessage } : msg
+    );
+
+    // Update any messages that reference the updated message as a parent
+    group.messages = group.messages.map((msg) => {
+      if (msg.parent && msg.parent.messageID === messageID) {
+        return {
+          ...msg,
+          parent: {
+            ...msg.parent,
+            message: newMessage,
+          },
+        };
+      }
+      return msg;
+    });
+
+    // Push updated group messages to history
+    updateHistory(group.messages, wss);
+  }
 }
 
 function logMessage(fullMessage, groups, wss) {
