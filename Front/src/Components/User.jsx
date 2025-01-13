@@ -16,51 +16,55 @@ const User = () => {
   const fileInputRef = useRef(null);
   const nameInputRef = useRef(null);
 
-  const handleProfilePictureChange = (file) => {
+  const handleProfilePictureChange = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("userID", userID);
 
     try {
-      axios
-        .post(`/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          setProfilePicture(response.data);
-        })
-        .catch((error) => {
-          console.error("Error uploading file:", error);
-        });
+      const response = await axios.post(`/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setProfilePicture(response.data);
+      return response.data;
     } catch (error) {
-      console.error("Unexpected error:", error);
+      console.error("Error uploading file:", error);
+      throw error;
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setEdit(false);
     const newNick = nameInputRef.current.value;
     const newProfilePicture = fileInputRef.current.files[0];
 
-    setEdit(false);
-    if (newNick.trim() !== "") {
-      setNickname(newNick);
+    try {
+      let profilePictureResponse = null;
 
-      if (ws) {
-        ws.send(
-          JSON.stringify({
-            type: "update_user",
-            updatedNickname: newNick,
-            updatedProfilePicture: profilePicture,
-            groupID: selectedGroup.groupID,
-          })
+      if (newProfilePicture) {
+        profilePictureResponse = await handleProfilePictureChange(
+          newProfilePicture
         );
       }
-    }
 
-    if (newProfilePicture) {
-      handleProfilePictureChange(newProfilePicture);
+      if (newNick.trim() !== "") {
+        setNickname(newNick);
+
+        if (ws) {
+          ws.send(
+            JSON.stringify({
+              type: "update_user",
+              updatedNickname: newNick,
+              updatedProfilePicture: profilePictureResponse,
+              groupID: selectedGroup.groupID,
+            })
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
     }
 
     if (fileInputRef.current) {

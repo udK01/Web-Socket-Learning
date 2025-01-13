@@ -88,6 +88,7 @@ function handleUserUpdated(userID, parsedData, users, groups, wss) {
     group.messages.forEach((msg) => {
       if (msg.parent && msg.parent.userID === userID) {
         msg.parent.nickname = updatedNickname;
+        msg.parent.profilePicture = updatedProfilePicture;
       }
     });
   });
@@ -97,7 +98,7 @@ function handleUserUpdated(userID, parsedData, users, groups, wss) {
     group.messages.forEach((msg) => {
       if (msg.userID === userID) {
         msg.nickname = updatedNickname;
-        console.log("Changed username for msg: ", msg);
+        msg.profilePicture = updatedProfilePicture;
       }
     });
   });
