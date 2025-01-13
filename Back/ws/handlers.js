@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const { v4: uuidv4, parse } = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 
 function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
@@ -43,12 +43,41 @@ function handleCreateGroup(userID, parsedData, groups, wss) {
   updateGroups(groups, wss);
 }
 
-function handleUserUpdated(userID, parsedData, users, messages, wss) {
+// function handleUserUpdated(userID, parsedData, users, messages, wss) {
+//   // Destructure Data Received.
+//   const {
+//     updatedNickname: updatedNickname,
+//     updatedProfilePicture: updatedProfilePicture,
+//   } = parsedData;
+
+//   // Alter User.
+//   if (users[userID]) {
+//     users[userID].nickname = updatedNickname;
+//     users[userID].profilePicture = updatedProfilePicture;
+//   }
+
+//   // Alter Log.
+//   messages.forEach((msg) => {
+//     if (msg.parent && msg.parent.userID === userID) {
+//       msg.parent.nickname = updatedNickname;
+//     }
+//     if (msg.userID === userID) {
+//       msg.nickname = updatedNickname;
+//     }
+//   });
+
+//   updateHistory(messages, wss);
+// }
+
+function handleUserUpdated(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const {
     updatedNickname: updatedNickname,
     updatedProfilePicture: updatedProfilePicture,
+    groupID: groupID,
   } = parsedData;
+
+  console.log(updatedNickname, updatedProfilePicture);
 
   // Alter User.
   if (users[userID]) {
@@ -56,17 +85,31 @@ function handleUserUpdated(userID, parsedData, users, messages, wss) {
     users[userID].profilePicture = updatedProfilePicture;
   }
 
-  // Alter Log.
-  messages.forEach((msg) => {
-    if (msg.parent && msg.parent.userID === userID) {
-      msg.parent.nickname = updatedNickname;
-    }
-    if (msg.userID === userID) {
-      msg.nickname = updatedNickname;
-    }
+  // Alter Parent Messages in Groups.
+  groups.forEach((group) => {
+    group.messages.forEach((msg) => {
+      if (msg.parent && msg.parent.userID === userID) {
+        msg.parent.nickname = updatedNickname;
+      }
+    });
   });
 
-  updateHistory(messages, wss);
+  // Alter Regular Messages in Groups.
+  groups.forEach((group) => {
+    group.messages.forEach((msg) => {
+      if (msg.userID === userID) {
+        msg.nickname = updatedNickname;
+        console.log("Changed username for msg: ", msg);
+      }
+    });
+  });
+
+  updateGroups(groups, wss);
+
+  updateHistory(
+    groups.find((group) => group.groupID === groupID).messages,
+    wss
+  );
 }
 
 function handleDelete(parsedData, groups, wss) {
@@ -145,6 +188,8 @@ function updateHistory(messages, wss) {
 
 function updateGroups(groups, wss) {
   // Update Other User's Logs.
+  groups.forEach((group) => console.log(group));
+
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(

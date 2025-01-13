@@ -11,7 +11,6 @@ const {
 
 module.exports = (users, groups) => {
   const wss = new WebSocket.Server({ port: 8080 });
-  let messages = [];
 
   wss.on("connection", (ws) => {
     const userID = uuidv4();
@@ -34,7 +33,7 @@ module.exports = (users, groups) => {
           handleMessages(userID, parsedData, users, groups, wss);
           break;
         case "update_user":
-          handleUserUpdated(userID, parsedData, users, messages, wss);
+          handleUserUpdated(userID, parsedData, users, groups, wss);
           break;
         case "reply":
           handleReply(userID, parsedData, users, groups, wss);

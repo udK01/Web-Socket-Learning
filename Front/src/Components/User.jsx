@@ -2,12 +2,14 @@ import React, { useRef, useState } from "react";
 import axios from "axios";
 
 import { useWebSocket } from "../WebSocketProvider";
+import { useGroup } from "../GroupProvider";
 import { useUser } from "../UserProvider";
 
 const User = () => {
   const { userID, nickname, profilePicture, setNickname, setProfilePicture } =
     useUser();
   const { ws } = useWebSocket();
+  const { selectedGroup } = useGroup();
 
   const [edit, setEdit] = useState(false);
 
@@ -51,6 +53,7 @@ const User = () => {
             type: "update_user",
             updatedNickname: newNick,
             updatedProfilePicture: profilePicture,
+            groupID: selectedGroup.groupID,
           })
         );
       }
