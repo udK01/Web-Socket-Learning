@@ -77,8 +77,6 @@ function handleUserUpdated(userID, parsedData, users, groups, wss) {
     groupID: groupID,
   } = parsedData;
 
-  console.log(updatedNickname, updatedProfilePicture);
-
   // Alter User.
   if (users[userID]) {
     users[userID].nickname = updatedNickname;
@@ -172,6 +170,13 @@ function logMessage(fullMessage, groups, wss) {
   });
 }
 
+/**
+ *
+ * Updates the currently Selected Group.
+ *
+ * @param {String[]} messages
+ * @param {Socket Server} wss
+ */
 function updateHistory(messages, wss) {
   // Update Other User's Logs.
   wss.clients.forEach((client) => {
@@ -186,10 +191,15 @@ function updateHistory(messages, wss) {
   });
 }
 
+/**
+ *
+ * Updates all the Groups.
+ *
+ * @param {String[]} groups
+ * @param {Socket Server} wss
+ */
 function updateGroups(groups, wss) {
   // Update Other User's Logs.
-  groups.forEach((group) => console.log(group));
-
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(
