@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import { useWebSocket } from "../WebSocketProvider";
-import { useGroup } from "../GroupProvider";
+import { useWebSocket } from "../Providers/WebSocketProvider";
+import { useGroup } from "../Providers/GroupProvider";
 
 export default function SendMessage({ reply, setReply, edit, setEdit }) {
   const [message, setMessage] = useState("");

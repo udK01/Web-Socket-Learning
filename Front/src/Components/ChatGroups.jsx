@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-import { useWebSocket } from "../WebSocketProvider";
-import { useGroup } from "../GroupProvider";
+import { useWebSocket } from "../Providers/WebSocketProvider";
+import { useGroup } from "../Providers/GroupProvider";
 
 export default function ChatGroups() {
   const { groups, selectedGroup, setSelectedGroup } = useGroup();

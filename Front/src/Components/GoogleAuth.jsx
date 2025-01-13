@@ -2,7 +2,7 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import React from "react";
 import axios from "axios";
 
-import { useUser } from "../UserProvider";
+import { useUser } from "../Providers/UserProvider";
 
 export default function GoogleAuth() {
   const { userID, setNickname, setProfilePicture } = useUser();

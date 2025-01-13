@@ -5,9 +5,9 @@ import { FaEdit } from "react-icons/fa";
 import { FaReply } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
-import { useWebSocket } from "../WebSocketProvider";
-import { useGroup } from "../GroupProvider";
-import { useUser } from "../UserProvider";
+import { useWebSocket } from "../Providers/WebSocketProvider";
+import { useGroup } from "../Providers/GroupProvider";
+import { useUser } from "../Providers/UserProvider";
 
 import SendMessage from "./SendMessage";
 
