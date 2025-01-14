@@ -8,6 +8,12 @@ export default {
         garamond: ['"EB Garamond"', "serif"],
         roboto: ["Roboto", "sans-serif"],
       },
+      colors: {
+        primary: "#232428",
+        secondary: "#26292D",
+        background: "#313338",
+        accent: "#5b209a",
+      },
     },
   },
   plugins: [require("tailwind-scrollbar")],

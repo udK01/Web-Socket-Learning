@@ -18,8 +18,8 @@ export default function ChatGroups() {
   const DisplayGroup = ({ group }) => {
     return (
       <div
-        className={`h-[10%] flex items-center justify-between  border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300 ${
-          group.groupID === selectedGroup?.groupID ? "bg-slate-800" : ""
+        className={`h-16 flex items-center justify-between  border-b-4 border-primary hover:cursor-pointer hover:bg-primary transition-colors duration-300 ${
+          group.groupID === selectedGroup?.groupID ? "bg-primary" : ""
         }`}
         onClick={() => setSelectedGroup(group)}
       >
@@ -29,13 +29,13 @@ export default function ChatGroups() {
         </div>
         {group.groupOwner === userID && (
           <div
-            className="h-full w-[20%] bg-red-500 flex flex-shrink-0 rounded-l-md justify-center items-center hover:bg-red-600"
+            className="h-full w-[10%] bg-red-500 flex flex-shrink-0 rounded-l-md justify-center items-center hover:bg-red-600"
             onClick={(e) => {
               e.stopPropagation();
               deleteGroup(group);
             }}
           >
-            <ImBin className="text-[24px]" />
+            <ImBin className="text-[16px]" />
           </div>
         )}
       </div>
@@ -53,13 +53,19 @@ export default function ChatGroups() {
         <div className="w-full flex justify-between px-1">
           <button
             className="bg-purple-500 rounded-md py-1 m-2 px-5 hover:cursor-pointer hover:bg-purple-700 transition-colors duration-300"
-            onClick={() => setShowCreate(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowCreate(false);
+            }}
           >
             Back
           </button>
           <button
             className="bg-orange-500 rounded-md py-1 m-2 px-5 hover:cursor-pointer hover:bg-orange-700 transition-colors duration-300"
-            onClick={() => createGroup()}
+            onClick={(e) => {
+              e.stopPropagation();
+              createGroup();
+            }}
           >
             Create
           </button>
@@ -100,14 +106,19 @@ export default function ChatGroups() {
   }
 
   return (
-    <div className="w-full h-[90%] flex flex-col text-white overflow-auto scrollbar-none">
-      {groups &&
-        groups.map((group, i) => <DisplayGroup key={i} group={group} />)}
-      <div className="flex justify-center items-center space-y-40">
-        <CiCirclePlus
-          className="text-[48px] hover:cursor-pointer hover:text-orange-500 transition-colors duration-300"
-          onClick={() => setShowCreate(true)}
-        />
+    <div className="w-full h-[90%] flex flex-col justify-between text-white">
+      <div className="overflow-auto scrollbar-none">
+        {groups &&
+          groups.map((group, i) => <DisplayGroup key={i} group={group} />)}
+      </div>
+
+      <div
+        className="flex justify-center items-center bg-primary space-y-40"
+        onClick={() => setShowCreate(true)}
+      >
+        <div className="text-[32px] hover:text-accent font-extrabold hover:cursor-pointer transition-colors duration-300 my-4">
+          Create Group
+        </div>
         {showCreate && <CreateGroupUI />}
       </div>
     </div>

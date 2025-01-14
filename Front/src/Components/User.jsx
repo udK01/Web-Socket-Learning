@@ -75,7 +75,7 @@ const User = () => {
   const DisplayUser = () => {
     return (
       <div
-        className="w-full h-[10%] flex items-center gap-2 bg-slate-800 rounded-md p-2 hover:bg-slate-900 hover:cursor-pointer"
+        className="w-full h-[10%] flex items-center gap-2 bg-primary rounded-md p-2 hover:bg-accent hover:cursor-pointer"
         onClick={() => setEdit(true)}
       >
         <img
