@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-import { FaEllipsisV } from "react-icons/fa";
+import { ImBin } from "react-icons/im";
 
 import { useWebSocket } from "../Providers/WebSocketProvider";
 import { useGroup } from "../Providers/GroupProvider";
@@ -18,17 +18,22 @@ export default function ChatGroups() {
   const DisplayGroup = ({ group }) => {
     return (
       <div
-        className={`h-[10%] flex items-center justify-between py-2 px-4 border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300 ${
+        className={`h-[10%] flex items-center justify-between  border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300 ${
           group.groupID === selectedGroup?.groupID ? "bg-slate-800" : ""
         }`}
         onClick={() => setSelectedGroup(group)}
       >
-        <div className="flex gap-2 line-clamp-1 text-ellipsis">
+        <div className="flex gap-2 line-clamp-1 text-ellipsis py-2 px-4">
           <img src={group.groupImg} className="flex flex-shrink-0" />
           <div className="text-[20px]">{group.groupName}</div>
         </div>
         {group.groupOwner === userID && (
-          <FaEllipsisV className="flex flex-shrink-0 hover:text-red-500 rounded-full" />
+          <div
+            className="h-full w-[20%] bg-red-500 flex flex-shrink-0 rounded-l-md justify-center items-center hover:bg-red-600"
+            onClick={() => deleteGroup(group)}
+          >
+            <ImBin className="text-[24px]" />
+          </div>
         )}
       </div>
     );
@@ -72,6 +77,15 @@ export default function ChatGroups() {
         })
       );
     }
+  }
+
+  function deleteGroup(group) {
+    ws.send(
+      JSON.stringify({
+        type: "delete_group",
+        group,
+      })
+    );
   }
 
   return (

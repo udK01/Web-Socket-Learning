@@ -43,31 +43,17 @@ function handleCreateGroup(userID, parsedData, groups, wss) {
   updateGroups(groups, wss);
 }
 
-// function handleUserUpdated(userID, parsedData, users, messages, wss) {
-//   // Destructure Data Received.
-//   const {
-//     updatedNickname: updatedNickname,
-//     updatedProfilePicture: updatedProfilePicture,
-//   } = parsedData;
+function handleDeleteGroup(parsedData, groups, wss) {
+  const { groupID } = parsedData.group;
 
-//   // Alter User.
-//   if (users[userID]) {
-//     users[userID].nickname = updatedNickname;
-//     users[userID].profilePicture = updatedProfilePicture;
-//   }
+  groups.splice(
+    0,
+    groups.length,
+    ...groups.filter((group) => group.groupID !== groupID)
+  );
 
-//   // Alter Log.
-//   messages.forEach((msg) => {
-//     if (msg.parent && msg.parent.userID === userID) {
-//       msg.parent.nickname = updatedNickname;
-//     }
-//     if (msg.userID === userID) {
-//       msg.nickname = updatedNickname;
-//     }
-//   });
-
-//   updateHistory(messages, wss);
-// }
+  updateGroups(groups, wss);
+}
 
 function handleUserUpdated(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
@@ -220,4 +206,5 @@ module.exports = {
   handleDelete,
   handleEdit,
   handleCreateGroup,
+  handleDeleteGroup,
 };

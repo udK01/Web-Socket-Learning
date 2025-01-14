@@ -7,6 +7,7 @@ const {
   handleDelete,
   handleEdit,
   handleCreateGroup,
+  handleDeleteGroup,
 } = require("./handlers");
 
 module.exports = (users, groups) => {
@@ -46,6 +47,9 @@ module.exports = (users, groups) => {
           break;
         case "create_group":
           handleCreateGroup(userID, parsedData, groups, wss);
+          break;
+        case "delete_group":
+          handleDeleteGroup(parsedData, groups, wss);
           break;
       }
     });
