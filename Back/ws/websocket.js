@@ -8,6 +8,7 @@ const {
   handleEdit,
   handleCreateGroup,
   handleDeleteGroup,
+  handleClearSelected,
 } = require("./handlers");
 
 module.exports = (users, groups) => {
@@ -50,6 +51,9 @@ module.exports = (users, groups) => {
           break;
         case "delete_group":
           handleDeleteGroup(parsedData, groups, wss);
+          break;
+        case "clear_selected":
+          handleClearSelected(wss);
           break;
       }
     });

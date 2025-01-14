@@ -30,7 +30,10 @@ export default function ChatGroups() {
         {group.groupOwner === userID && (
           <div
             className="h-full w-[20%] bg-red-500 flex flex-shrink-0 rounded-l-md justify-center items-center hover:bg-red-600"
-            onClick={() => deleteGroup(group)}
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteGroup(group);
+            }}
           >
             <ImBin className="text-[24px]" />
           </div>
@@ -86,6 +89,14 @@ export default function ChatGroups() {
         group,
       })
     );
+
+    if (selectedGroup.groupID === group.groupID) {
+      ws.send(
+        JSON.stringify({
+          type: "clear_selected",
+        })
+      );
+    }
   }
 
   return (

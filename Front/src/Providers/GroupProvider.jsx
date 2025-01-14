@@ -17,6 +17,8 @@ export const GroupProvider = ({ children }) => {
 
       if (data.type === "groups") {
         setGroups(data.groups);
+      } else if (data.type === "clear_selected") {
+        setSelectedGroup(null);
       }
     };
 
