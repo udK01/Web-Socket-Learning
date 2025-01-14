@@ -1,7 +1,10 @@
 import { useRef, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
+import { FaEllipsisV } from "react-icons/fa";
+
 import { useWebSocket } from "../Providers/WebSocketProvider";
 import { useGroup } from "../Providers/GroupProvider";
+import { useUser } from "../Providers/UserProvider";
 
 export default function ChatGroups() {
   const { groups, selectedGroup, setSelectedGroup } = useGroup();
@@ -10,19 +13,23 @@ export default function ChatGroups() {
   const groupRef = useRef(null);
 
   const { ws } = useWebSocket();
+  const { userID } = useUser();
 
   const DisplayGroup = ({ group }) => {
     return (
       <div
-        className={`h-[10%] flex items-center gap-5 py-2 px-4 border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300 ${
+        className={`h-[10%] flex items-center justify-between py-2 px-4 border-b-2 border-slate-800 hover:cursor-pointer hover:bg-slate-800 transition-colors duration-300 ${
           group.groupID === selectedGroup?.groupID ? "bg-slate-800" : ""
         }`}
         onClick={() => setSelectedGroup(group)}
       >
-        <img src={group.groupImg} />
-        <div className="text-[20px] line-clamp-1 text-ellipsis">
-          {group.groupName}
+        <div className="flex gap-2 line-clamp-1 text-ellipsis">
+          <img src={group.groupImg} className="flex flex-shrink-0" />
+          <div className="text-[20px]">{group.groupName}</div>
         </div>
+        {group.groupOwner === userID && (
+          <FaEllipsisV className="flex flex-shrink-0 hover:text-red-500 rounded-full" />
+        )}
       </div>
     );
   };
