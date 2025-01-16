@@ -92,9 +92,9 @@ const User = () => {
   const DisplayEdit = () => {
     return (
       <div className="absolute top-0 left-0 flex justify-center items-center w-full h-full">
-        <div className="relative w-[20%] bg-purple-600 bg-opacity-50 ring-4 rounded-md ring-purple-700">
+        <div className="relative w-[20%] bg-primary bg-opacity-50 ring-4 rounded-md ring-tertiary">
           <button
-            className="absolute top-2 right-2 text-white bg-purple-700 hover:bg-purple-800 rounded-full w-8 h-8 flex justify-center items-center"
+            className="absolute top-2 right-2 text-white bg-primary hover:bg-tertiary rounded-full size-8 flex justify-center items-center"
             onClick={() => setEdit(false)}
           >
             X
@@ -102,7 +102,7 @@ const User = () => {
           <div className="flex flex-col h-full items-center justify-center space-y-3 p-2">
             <img
               src={profilePicture}
-              className="w-40 h-40 hover:cursor-pointer hover:bg-purple-800 rounded-full object-cover"
+              className="w-40 h-40 hover:cursor-pointer hover:bg-accent rounded-full object-cover"
               alt="Profile"
               onClick={() => fileInputRef.current.click()}
             />
@@ -124,7 +124,7 @@ const User = () => {
               }}
             />
             <button
-              className="text-white rounded-md ring-2 ring-purple-900 bg-purple-800 px-6 py-1 hover:bg-purple-900 hover:ring-purple-950"
+              className="text-white rounded-md ring-2 ring-accent bg-primary px-6 py-1 hover:bg-accent"
               onClick={handleSubmit}
             >
               Submit

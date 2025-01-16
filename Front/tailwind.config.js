@@ -11,6 +11,7 @@ export default {
       colors: {
         primary: "#232428",
         secondary: "#26292D",
+        tertiary: "#111214",
         background: "#313338",
         accent: "#5b209a",
       },
