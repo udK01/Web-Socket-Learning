@@ -75,14 +75,14 @@ const User = () => {
   const DisplayUser = () => {
     return (
       <div
-        className="w-full h-[10%] flex items-center gap-2 bg-primary rounded-md p-2 hover:bg-accent hover:cursor-pointer"
+        className="w-full h-[10%] flex items-center justify-center gap-2 bg-primary rounded-md p-2 hover:bg-accent hover:cursor-pointer"
         onClick={() => setEdit(true)}
       >
         <img
           src={profilePicture}
-          className="w-10 h-10 rounded-full ring-1 ring-white"
+          className="size-16 rounded-full ring-1 ring-white"
         />
-        <div className="text-white text-ellipsis line-clamp-1 text-[20px] whitespace-nowrap overflow-hidden">
+        <div className="text-white text-ellipsis line-clamp-1 text-[30px] whitespace-nowrap overflow-hidden">
           {nickname}
         </div>
       </div>
