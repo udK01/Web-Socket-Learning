@@ -185,14 +185,14 @@ export default function Log() {
       <div
         className={`${
           reply || edit ? "h-[82%]" : "h-[90%]"
-        } p-4 text-white overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900 scrollbar-track-transparent`}
+        } p-4 text-white overflow-auto scrollbar-thin scrollbar-thumb-tertiary scrollbar-track-transparent`}
       >
         {messageData
           .filter((msg) => msg !== undefined)
           .map((msg, index) => (
             <div
               key={index}
-              className="mb-2 flex flex-col rounded-md p-2 hover:bg-slate-800 hover:cursor-pointer"
+              className="mb-2 flex flex-col break-words rounded-md w-full p-2 hover:bg-secondary hover:cursor-pointer"
               onContextMenu={(e) => handleRightClick(e, msg)}
             >
               {msg.parent === null ? (

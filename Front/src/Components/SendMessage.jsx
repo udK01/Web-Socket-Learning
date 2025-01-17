@@ -54,18 +54,20 @@ export default function SendMessage({ reply, setReply, edit, setEdit }) {
   };
 
   return (
-    <input
-      ref={inputRef}
-      className="w-full h-[10%] bg-transparent ring-1 rounded-md p-2 text-left align-top resize-none overflow-y-auto focus:outline-none text-white"
-      value={message}
-      onChange={(e) => setMessage(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          handleSendMessage();
-        }
-      }}
-      placeholder="Type your message here..."
-    />
+    <div className="w-full h-[10%] p-3">
+      <textarea
+        ref={inputRef}
+        className="w-full h-full bg-secondary ring-4 ring-primary rounded-md p-2 text-white resize-none"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSendMessage();
+          }
+        }}
+        placeholder="Type your message here..."
+      />
+    </div>
   );
 }
