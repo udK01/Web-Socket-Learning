@@ -251,6 +251,7 @@ export default function Log() {
           setReply={setReply}
           edit={edit}
           setEdit={setEdit}
+          selectedMessage={selectedMessage}
         />
       )}
     </div>

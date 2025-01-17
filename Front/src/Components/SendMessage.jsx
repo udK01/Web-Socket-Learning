@@ -3,15 +3,23 @@ import { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "../Providers/WebSocketProvider";
 import { useGroup } from "../Providers/GroupProvider";
 
-export default function SendMessage({ reply, setReply, edit, setEdit }) {
+export default function SendMessage({
+  reply,
+  setReply,
+  edit,
+  setEdit,
+  selectedMessage,
+}) {
   const [message, setMessage] = useState("");
   const inputRef = useRef(null);
 
   const { ws } = useWebSocket();
   const { selectedGroup } = useGroup();
 
-  // Automatically Select Input Field On Edit.
+  // Automatically Select Input Field On Edit or Reply.
   useEffect(() => {
+    edit ? setMessage(selectedMessage.message) : setMessage("");
+
     if ((edit || reply) && inputRef.current) {
       inputRef.current.focus();
     }
