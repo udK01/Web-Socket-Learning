@@ -54,7 +54,7 @@ export default function SendMessage({ reply, setReply, edit, setEdit }) {
   };
 
   return (
-    <div className="w-full h-[10%] p-3">
+    <div className="w-full h-[10%] px-3 pb-3">
       <textarea
         ref={inputRef}
         className="w-full h-full bg-secondary ring-4 ring-primary rounded-md p-2 text-white resize-none"

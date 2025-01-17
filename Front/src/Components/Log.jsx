@@ -94,11 +94,13 @@ export default function Log() {
 
   const handleReply = () => {
     setShowMenu(false);
+    setEdit(false);
     setReply(selectedMessage);
   };
 
   const handleEdit = () => {
     setShowMenu(false);
+    setReply(false);
     setEdit(selectedMessage);
   };
 
@@ -114,8 +116,8 @@ export default function Log() {
 
   const renderBar = (type, text, action) => {
     return (
-      <div className="w-full h-[8%] flex items-center justify-between rounded-t-md bg-slate-900 text-gray-300 pl-2">
-        <div>
+      <div className="w-full h-[4%] flex items-center justify-between px-3 text-gray-300">
+        <div className="w-full h-full flex items-center px-3 rounded-t-md bg-primary ">
           {type === "reply" && (
             <>
               Replying to
@@ -127,7 +129,7 @@ export default function Log() {
           {type === "edit" && "Editing message..."}
         </div>
         <div
-          className="w-10 h-full flex items-center justify-center rounded-t-md bg-slate-950 hover:bg-black hover:cursor-pointer"
+          className="w-10 h-full flex items-center justify-center rounded-t-md bg-tertiary hover:bg-black hover:cursor-pointer"
           onClick={action}
         >
           <IoIosClose className="size-10 hover:text-red-500 transition-colors duration-300 ease-in-out" />
@@ -184,7 +186,7 @@ export default function Log() {
     <div className="w-full h-full">
       <div
         className={`${
-          reply || edit ? "h-[82%]" : "h-[90%]"
+          reply || edit ? "h-[86%]" : "h-[90%]"
         } p-4 text-white overflow-auto scrollbar-thin scrollbar-thumb-tertiary scrollbar-track-transparent`}
       >
         {messageData
