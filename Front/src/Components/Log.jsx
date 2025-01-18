@@ -19,7 +19,7 @@ export default function Log() {
 
   const { ws } = useWebSocket();
   const { userID } = useUser();
-  const { groups, selectedGroup } = useGroup();
+  const { groups, setGroups, selectedGroup } = useGroup();
 
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showMenu, setShowMenu] = useState(false);
@@ -29,42 +29,57 @@ export default function Log() {
   const [edit, setEdit] = useState(null);
 
   useEffect(() => {
-    if (ws && selectedGroup) {
+    if (ws) {
       const handleMessage = ({ data }) => {
         const parsedData = JSON.parse(data);
 
         if (parsedData.type === "message") {
           const { groupID } = parsedData.data;
 
-          const targetGroup = groups.find((group) => group.groupID === groupID);
+          setGroups((prevGroups) =>
+            prevGroups.map((group) =>
+              group.groupID === groupID
+                ? {
+                    ...group,
+                    messages: [...(group.messages || []), parsedData.data],
+                  }
+                : group
+            )
+          );
 
-          if (targetGroup) {
-            targetGroup.messages = [...targetGroup.messages, parsedData.data];
-
-            if (selectedGroup && selectedGroup.groupID === groupID) {
-              setMessageData(targetGroup.messages);
-            }
+          if (selectedGroup && selectedGroup.groupID === groupID) {
+            setMessageData((prev) => [...prev, parsedData.data]);
           }
         } else if (parsedData.type === "edited_messages") {
-          setMessageData(parsedData.messages);
-          selectedGroup.messages = [...parsedData.messages];
-          groups.find(
-            (group) => selectedGroup.groupID === group.groupID
-          ).messages = [...parsedData.messages];
+          setGroups((prevGroups) =>
+            prevGroups.map((group) =>
+              group.groupID === selectedGroup?.groupID
+                ? { ...group, messages: [...parsedData.messages] }
+                : group
+            )
+          );
+
+          if (selectedGroup) {
+            setMessageData([...parsedData.messages]);
+          }
         }
       };
-
-      setMessageData(selectedGroup.messages);
 
       ws.addEventListener("message", handleMessage);
 
       return () => {
         ws.removeEventListener("message", handleMessage);
       };
-    } else if (!selectedGroup) {
+    }
+  }, [ws, selectedGroup, setGroups]);
+
+  useEffect(() => {
+    if (selectedGroup) {
+      setMessageData(selectedGroup.messages || []);
+    } else {
       setMessageData([]);
     }
-  }, [ws, selectedGroup]);
+  }, [selectedGroup]);
 
   // Smooth Scroll.
   useEffect(() => {

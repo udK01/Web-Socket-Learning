@@ -115,7 +115,7 @@ const User = () => {
             <input
               ref={nameInputRef}
               placeholder={`${nickname}`}
-              className="w-[90%] bg-transparent text-center"
+              className="w-[90%] bg-transparent text-center text-white"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
