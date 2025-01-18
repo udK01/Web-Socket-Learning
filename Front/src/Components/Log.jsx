@@ -182,6 +182,43 @@ export default function Log() {
     );
   };
 
+  const Menu = () => {
+    return (
+      <ul
+        ref={menuRef}
+        tabIndex={0}
+        className="absolute bg-primary border-2 border-tertiary rounded-md z-50"
+        style={{ top: menuPosition.y, left: menuPosition.x }}
+        onBlur={handleBlur}
+      >
+        <li
+          className="flex items-center gap-2 p-2 hover:bg-tertiary hover:cursor-pointer"
+          onClick={handleReply}
+        >
+          <FaReply /> Reply to {selectedMessage?.nickname}
+        </li>
+        {selectedMessage.userID === userID && (
+          <>
+            <div className="h-[1px] w-[95%] mx-auto bg-tertiary" />
+            <li
+              className="flex items-center gap-2 p-2 hover:bg-tertiary hover:cursor-pointer"
+              onClick={handleEdit}
+            >
+              <FaEdit /> Edit Message
+            </li>
+            <div className="h-[1px] w-[95%] mx-auto bg-tertiary" />
+            <li
+              className="flex items-center gap-2 p-2 hover:bg-tertiary hover:cursor-pointer text-red-500"
+              onClick={handleDelete}
+            >
+              <ImBin /> Delete Message
+            </li>
+          </>
+        )}
+      </ul>
+    );
+  };
+
   return (
     <div className="w-full h-full">
       <div
@@ -205,40 +242,7 @@ export default function Log() {
             </div>
           ))}
 
-        {showMenu && (
-          <ul
-            ref={menuRef}
-            tabIndex={0}
-            className="absolute bg-slate-800 border-2 border-slate-900 rounded-md z-50"
-            style={{ top: menuPosition.y, left: menuPosition.x }}
-            onBlur={handleBlur}
-          >
-            <li
-              className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer"
-              onClick={handleReply}
-            >
-              <FaReply /> Reply to {selectedMessage?.nickname}
-            </li>
-            {selectedMessage.userID === userID && (
-              <>
-                <div className="h-[1px] w-[95%] mx-auto bg-slate-900" />
-                <li
-                  className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer"
-                  onClick={handleEdit}
-                >
-                  <FaEdit /> Edit Message
-                </li>
-                <div className="h-[1px] w-[95%] mx-auto bg-slate-900" />
-                <li
-                  className="flex items-center gap-2 p-2 hover:bg-slate-900 hover:cursor-pointer text-red-500"
-                  onClick={handleDelete}
-                >
-                  <ImBin /> Delete Message
-                </li>
-              </>
-            )}
-          </ul>
-        )}
+        {showMenu && <Menu />}
         <div ref={messagesEndRef} />
       </div>
 
