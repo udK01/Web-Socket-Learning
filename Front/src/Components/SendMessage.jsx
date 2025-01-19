@@ -65,7 +65,7 @@ export default function SendMessage({
     <div className="w-full h-[10%] px-3 pb-3">
       <textarea
         ref={inputRef}
-        className="w-full h-full bg-secondary ring-4 ring-primary rounded-md p-2 text-white resize-none"
+        className="w-full h-full dark:bg-secondary bg-secondary_light ring-4 dark:ring-primary ring-primary_light rounded-md p-2 resize-none"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => {

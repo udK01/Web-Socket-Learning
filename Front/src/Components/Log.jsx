@@ -131,8 +131,8 @@ export default function Log() {
 
   const renderBar = (type, text, action) => {
     return (
-      <div className="w-full h-[4%] flex items-center justify-between px-3 text-gray-300">
-        <div className="w-full h-full flex items-center px-3 rounded-t-md bg-primary ">
+      <div className="w-full h-[4%] flex items-center justify-between px-3 dark:text-gray-300 text-black">
+        <div className="w-full h-full flex items-center px-3 rounded-t-md dark:bg-primary bg-primary_light">
           {type === "reply" && (
             <>
               Replying to
@@ -144,7 +144,7 @@ export default function Log() {
           {type === "edit" && "Editing message..."}
         </div>
         <div
-          className="w-10 h-full flex items-center justify-center rounded-t-md bg-tertiary hover:bg-black hover:cursor-pointer"
+          className="w-10 h-full flex items-center justify-center rounded-t-md dark:bg-tertiary bg-tertiary_light dark:hover:bg-black hover:bg-white hover:cursor-pointer"
           onClick={action}
         >
           <IoIosClose className="size-10 hover:text-red-500 transition-colors duration-300 ease-in-out" />
@@ -160,9 +160,9 @@ export default function Log() {
           <img
             src={msg.profilePicture}
             alt="Profile"
-            className="size-10 ring-1 ring-white rounded-full"
+            className="size-10 ring-1 dark:ring-white ring-black rounded-full"
           />
-          <span className="text-[16px] font-bold text-sm text-gray-300 hover:underline hover:cursor-pointer">
+          <span className="text-[16px] font-bold text-sm dark:text-gray-300 text-black hover:underline hover:cursor-pointer">
             {msg.nickname}
           </span>
         </div>
@@ -178,16 +178,16 @@ export default function Log() {
       <>
         <div>
           <div className="ml-5 flex items-center gap-1">
-            <div className="border-l border-t w-7 h-3 border-gray-300 rounded-tl-lg" />
+            <div className="border-l border-t w-7 h-3 dark:border-gray-300 border-black rounded-tl-lg" />
             <img
               src={parent.profilePicture}
               alt="Profile"
-              className="size-5 ring-1 ring-white rounded-full"
+              className="size-5 ring-1 dark:ring-white ring-black rounded-full"
             />
-            <span className="text-[16px] font-bold text-sm text-gray-300 hover:underline hover:cursor-pointer">
+            <span className="text-[16px] font-bold text-sm dark:text-gray-300 text-black hover:underline hover:cursor-pointer">
               {parent.nickname}
             </span>
-            <span className="text-gray-300 line-clamp-1 text-ellipsis text-[12px]">
+            <span className="dark:text-gray-300 text-black line-clamp-1 text-ellipsis text-[12px]">
               {parent.message}
             </span>
           </div>
@@ -202,28 +202,28 @@ export default function Log() {
       <ul
         ref={menuRef}
         tabIndex={0}
-        className="absolute bg-primary border-2 border-tertiary rounded-md z-50"
+        className="absolute dark:bg-primary bg-primary_light border-2 dark:border-tertiary border-tertiary_light rounded-md z-50"
         style={{ top: menuPosition.y, left: menuPosition.x }}
         onBlur={handleBlur}
       >
         <li
-          className="flex items-center gap-2 p-2 hover:bg-tertiary hover:cursor-pointer"
+          className="flex items-center gap-2 p-2 dark:hover:bg-tertiary hover:bg-tertiary_light hover:cursor-pointer"
           onClick={handleReply}
         >
           <FaReply /> Reply to {selectedMessage?.nickname}
         </li>
         {selectedMessage.userID === userID && (
           <>
-            <div className="h-[1px] w-[95%] mx-auto bg-tertiary" />
+            <div className="h-[1px] w-[95%] mx-auto dark:bg-tertiary bg-tertiary_light" />
             <li
-              className="flex items-center gap-2 p-2 hover:bg-tertiary hover:cursor-pointer"
+              className="flex items-center gap-2 p-2 dark:hover:bg-tertiary hover:bg-tertiary_light hover:cursor-pointer"
               onClick={handleEdit}
             >
               <FaEdit /> Edit Message
             </li>
-            <div className="h-[1px] w-[95%] mx-auto bg-tertiary" />
+            <div className="h-[1px] w-[95%] mx-auto dark:bg-tertiary bg-tertiary_light" />
             <li
-              className="flex items-center gap-2 p-2 hover:bg-tertiary hover:cursor-pointer text-red-500"
+              className="flex items-center gap-2 p-2 dark:hover:bg-tertiary hover:bg-tertiary_light hover:cursor-pointer text-red-500"
               onClick={handleDelete}
             >
               <ImBin /> Delete Message
@@ -239,14 +239,14 @@ export default function Log() {
       <div
         className={`${
           reply || edit ? "h-[86%]" : "h-[90%]"
-        } p-4 text-white overflow-auto scrollbar-thin scrollbar-thumb-tertiary scrollbar-track-transparent`}
+        } p-4 overflow-auto scrollbar-thin dark:scrollbar-thumb-tertiary scrollbar-thumb-tertiary_light scrollbar-track-transparent`}
       >
         {messageData
           .filter((msg) => msg !== undefined)
           .map((msg, index) => (
             <div
               key={index}
-              className="mb-2 flex flex-col break-words rounded-md w-full p-2 hover:bg-secondary hover:cursor-pointer"
+              className="mb-2 flex flex-col break-words rounded-md w-full p-2 dark:hover:bg-secondary hover:bg-secondary_light hover:cursor-pointer"
               onContextMenu={(e) => handleRightClick(e, msg)}
             >
               {msg.parent === null ? (

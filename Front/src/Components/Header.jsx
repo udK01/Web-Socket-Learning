@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useGroup } from "../Providers/GroupProvider";
 
 import GoogleAuth from "./GoogleAuth";
@@ -9,7 +7,7 @@ export default function Header() {
   const { selectedGroup } = useGroup();
 
   return (
-    <div className="w-full h-[80px] flex items-center bg-primary text-white">
+    <div className="w-full h-[80px] flex items-center bg-primary_light dark:bg-primary">
       <div className="w-[20%] flex justify-center items-center">
         <GoogleAuth />
         <ThemeSwitcher />

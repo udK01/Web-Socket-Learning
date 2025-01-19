@@ -75,14 +75,14 @@ const User = () => {
   const DisplayUser = () => {
     return (
       <div
-        className="w-full h-[10%] flex items-center justify-center gap-2 bg-primary rounded-md p-2 hover:bg-accent hover:cursor-pointer"
+        className="w-full h-[10%] flex items-center justify-center gap-2 dark:bg-primary bg-primary_light rounded-md p-2 dark:hover:bg-accent hover:bg-accent_light hover:cursor-pointer"
         onClick={() => setEdit(true)}
       >
         <img
           src={profilePicture}
-          className="size-16 rounded-full ring-1 ring-white"
+          className="size-16 rounded-full ring-1 dark:ring-white ring-black"
         />
-        <div className="text-white text-ellipsis line-clamp-1 text-[30px] whitespace-nowrap overflow-hidden">
+        <div className="text-ellipsis line-clamp-1 text-[30px] whitespace-nowrap overflow-hidden">
           {nickname}
         </div>
       </div>
@@ -92,9 +92,9 @@ const User = () => {
   const DisplayEdit = () => {
     return (
       <div className="absolute top-0 left-0 flex justify-center items-center w-full h-full">
-        <div className="relative w-[20%] bg-primary bg-opacity-50 ring-4 rounded-md ring-tertiary">
+        <div className="relative w-[20%] bg-primary_light dark:bg-primary bg-opacity-50 ring-4 rounded-md dark:ring-tertiary ring-tertiary_light">
           <button
-            className="absolute top-2 right-2 text-white bg-primary hover:bg-tertiary rounded-full size-8 flex justify-center items-center"
+            className="absolute top-2 right-2 dark:bg-primary bg-primary_light dark:hover:bg-tertiary hover:bg-tertiary_light rounded-full size-8 flex justify-center items-center"
             onClick={() => setEdit(false)}
           >
             X
@@ -102,7 +102,7 @@ const User = () => {
           <div className="flex flex-col h-full items-center justify-center space-y-3 p-2">
             <img
               src={profilePicture}
-              className="w-40 h-40 hover:cursor-pointer hover:bg-accent rounded-full object-cover"
+              className="w-40 h-40 hover:cursor-pointer dark:hover:bg-accent hover:bg-accent_light rounded-full object-cover"
               alt="Profile"
               onClick={() => fileInputRef.current.click()}
             />
@@ -115,7 +115,7 @@ const User = () => {
             <input
               ref={nameInputRef}
               placeholder={`${nickname}`}
-              className="w-[90%] bg-transparent text-center text-white"
+              className="w-[90%] bg-transparent text-center placeholder-black dark:placeholder-white"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -124,7 +124,7 @@ const User = () => {
               }}
             />
             <button
-              className="text-white rounded-md ring-2 ring-accent bg-primary px-6 py-1 hover:bg-accent"
+              className="rounded-md ring-2 dark:ring-accent ring-accent_light dark:bg-primary bg-primary_light px-6 py-1 dark:hover:bg-accent hover:bg-accent_light"
               onClick={handleSubmit}
             >
               Submit
