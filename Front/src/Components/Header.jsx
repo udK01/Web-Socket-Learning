@@ -8,7 +8,7 @@ export default function Header() {
 
   return (
     <div className="w-full h-[80px] flex items-center bg-primary_light dark:bg-primary">
-      <div className="w-[20%] flex justify-center items-center">
+      <div className="w-[20%] flex justify-between items-center px-10">
         <GoogleAuth />
         <ThemeSwitcher />
       </div>
