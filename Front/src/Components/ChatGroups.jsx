@@ -23,10 +23,13 @@ export default function ChatGroups() {
         }`}
         onClick={() => setSelectedGroup(group)}
       >
-        <div className="flex gap-2 line-clamp-1 text-ellipsis py-2 px-4">
+        <div className="flex gap-2 py-2 px-4">
           <img src={group.groupImg} className="flex flex-shrink-0" />
-          <div className="text-[20px]">{group.groupName}</div>
+          <div className="text-[20px] truncate max-w-full overflow-hidden">
+            {group.groupName}
+          </div>
         </div>
+
         {group.groupOwner === userID && (
           <div
             className="h-full w-[10%] bg-red-500 flex flex-shrink-0 rounded-l-md justify-center items-center hover:bg-red-600"
