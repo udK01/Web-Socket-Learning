@@ -6,8 +6,10 @@ import Log from "./Components/Log";
 export default function App() {
   return (
     <section className="h-screen flex flex-col justify-center items-center text-black dark:text-white">
-      <Header />
-      <div className="flex w-full h-full">
+      <div className="w-full h-[8%]">
+        <Header />
+      </div>
+      <div className="flex w-full h-[92%]">
         <div className="w-[20%] dark:bg-secondary bg-secondary_light">
           <ChatGroups />
           <User />
