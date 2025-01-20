@@ -122,7 +122,7 @@ export default function ChatGroups() {
       </div>
 
       <div
-        className="flex justify-center items-center dark:bg-primary bg-primary_light dark:hover:bg-accent hover:bg-accent_light font-extrabold hover:cursor-pointer transition-colors duration-300"
+        className="flex justify-center items-center dark:bg-primary bg-primary_light dark:hover:bg-accent hover:bg-accent_light font-extrabold hover:cursor-pointer"
         onClick={() => setShowCreate(true)}
       >
         <div className="text-[32px] my-4">Create Group</div>
