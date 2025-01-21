@@ -12,9 +12,9 @@ export default function Header({ show, setShow }) {
   return (
     <div className="w-full h-[80px] flex items-center bg-primary_light dark:bg-primary">
       <div
-        className={`w-[20%] flex ${
-          isSmallScreen ? "justify-center" : "justify-between"
-        } items-center px-10 `}
+        className={`${
+          show ? "w-[30%]" : "w-[20%]"
+        } flex justify-center items-center px-10`}
       >
         {isSmallScreen ? (
           <div onClick={() => setShow(!show)}>
@@ -23,11 +23,13 @@ export default function Header({ show, setShow }) {
         ) : (
           <>
             <GoogleAuth />
-            <ThemeSwitcher />
+            {/* <ThemeSwitcher /> */}
           </>
         )}
       </div>
-      <div className="w-[80%] text-[32px] line-clamp-1">
+      <div
+        className={`${show ? "w-[70%]" : "w-[80%]"} text-[32px] line-clamp-1`}
+      >
         {selectedGroup && selectedGroup.groupName}
       </div>
     </div>

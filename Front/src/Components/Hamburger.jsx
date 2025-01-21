@@ -13,19 +13,19 @@ const Hamburger = () => {
     >
       {/* Top bar */}
       <span
-        className={`block h-1 w-full bg-tertiary_light dark:bg-tertiary rounded transition-transform duration-300 group-hover:bg-accent_light dark:group-hover:bg-accent ${
+        className={`block h-1 w-full bg-tertiary rounded transition-transform duration-300 group-hover:bg-accent_light dark:group-hover:bg-accent ${
           isOpen ? "rotate-45 translate-y-3.5" : ""
         }`}
       ></span>
       {/* Middle bar */}
       <span
-        className={`block h-1 w-full bg-tertiary_light dark:bg-tertiary rounded transition-all duration-300 group-hover:bg-accent_light dark:group-hover:bg-accent ${
+        className={`block h-1 w-full bg-tertiary rounded transition-all duration-300 group-hover:bg-accent_light dark:group-hover:bg-accent ${
           isOpen ? "opacity-0" : ""
         }`}
       ></span>
       {/* Bottom bar */}
       <span
-        className={`block h-1 w-full bg-tertiary_light dark:bg-tertiary rounded transition-transform duration-300 group-hover:bg-accent_light dark:group-hover:bg-accent ${
+        className={`block h-1 w-full bg-tertiary rounded transition-transform duration-300 group-hover:bg-accent_light dark:group-hover:bg-accent ${
           isOpen ? "-rotate-45 -translate-y-3.5" : ""
         }`}
       ></span>
