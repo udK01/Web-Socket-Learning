@@ -120,12 +120,11 @@ export default function ChatGroups() {
         {groups &&
           groups.map((group, i) => <DisplayGroup key={i} group={group} />)}
       </div>
-
       <div
         className="flex justify-center items-center dark:bg-primary bg-primary_light dark:hover:bg-accent hover:bg-accent_light font-extrabold hover:cursor-pointer"
         onClick={() => setShowCreate(true)}
       >
-        <div className="text-[32px] my-4">Create Group</div>
+        <div className="xl:text-[32px] md:text-[24px] my-4">Create Group</div>
         {showCreate && <CreateGroupUI />}
       </div>
     </div>
