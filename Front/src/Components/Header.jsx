@@ -5,15 +5,21 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import GoogleAuth from "./GoogleAuth";
 import Hamburger from "./Hamburger";
 
-export default function Header() {
+export default function Header({ show, setShow }) {
   const { selectedGroup } = useGroup();
   const isSmallScreen = useScreenContext();
 
   return (
     <div className="w-full h-[80px] flex items-center bg-primary_light dark:bg-primary">
-      <div className="w-[20%] flex justify-between items-center px-10">
+      <div
+        className={`w-[20%] flex ${
+          isSmallScreen ? "justify-center" : "justify-between"
+        } items-center px-10 `}
+      >
         {isSmallScreen ? (
-          <Hamburger />
+          <div onClick={() => setShow(!show)}>
+            <Hamburger />
+          </div>
         ) : (
           <>
             <GoogleAuth />

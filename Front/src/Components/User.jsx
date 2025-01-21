@@ -80,7 +80,7 @@ const User = () => {
       >
         <img
           src={profilePicture}
-          className="xl:size-16 md:size-12 rounded-full ring-1 dark:ring-white ring-black"
+          className="xl:size-16 md:size-12 xs:size-10 rounded-full ring-1 dark:ring-white ring-black"
         />
         <div className="text-ellipsis line-clamp-1 xl:text-[30px] md:text-[24px] whitespace-nowrap overflow-hidden">
           {nickname}
