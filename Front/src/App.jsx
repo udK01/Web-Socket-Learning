@@ -18,7 +18,7 @@ export default function App() {
   }, [isSmallScreen]);
 
   return (
-    <section className="h-screen min-h-[700px] flex flex-col justify-center items-center text-black dark:text-white">
+    <section className="h-screen min-h-[300px] overflow-hidden flex flex-col justify-center items-center text-black dark:text-white">
       <div className="w-full h-[8%] min-h-[80px]">
         <Header show={show} setShow={setShow} />
       </div>
@@ -41,7 +41,7 @@ export default function App() {
         <div
           className={`${
             isSmallScreen ? "w-[100%]" : "w-[80%]"
-          } dark:bg-background bg-background_light`}
+          } dark:bg-background bg-background_light overflow-hidden`}
         >
           <Log />
         </div>
