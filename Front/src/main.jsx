@@ -1,7 +1,8 @@
 import { WebSocketProvider } from "./Providers/WebSocketProvider.jsx";
+import { ScreenProvider } from "./Providers/ScreenProvider.jsx";
 import { GroupProvider } from "./Providers/GroupProvider.jsx";
-import { UserProvider } from "./Providers/UserProvider.jsx";
 import { ThemeProvider } from "./Providers/ThemeProvider.jsx";
+import { UserProvider } from "./Providers/UserProvider.jsx";
 
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
@@ -15,7 +16,9 @@ createRoot(document.getElementById("root")).render(
       <WebSocketProvider>
         <UserProvider>
           <GroupProvider>
-            <App />
+            <ScreenProvider>
+              <App />
+            </ScreenProvider>
           </GroupProvider>
         </UserProvider>
       </WebSocketProvider>
