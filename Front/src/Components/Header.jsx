@@ -13,7 +13,7 @@ export default function Header({ show, setShow }) {
     <div className="w-full h-[80px] flex items-center bg-primary_light dark:bg-primary">
       <div
         className={`${
-          show ? "w-[30%]" : "w-[20%]"
+          isSmallScreen ? "w-[30%]" : "w-[20%]"
         } flex justify-center items-center px-10`}
       >
         {isSmallScreen ? (
@@ -23,12 +23,14 @@ export default function Header({ show, setShow }) {
         ) : (
           <>
             <GoogleAuth />
-            {/* <ThemeSwitcher /> */}
+            <ThemeSwitcher />
           </>
         )}
       </div>
       <div
-        className={`${show ? "w-[70%]" : "w-[80%]"} text-[32px] line-clamp-1`}
+        className={`${
+          isSmallScreen ? "w-[70%]" : "w-[80%]"
+        } text-[32px] line-clamp-1`}
       >
         {selectedGroup && selectedGroup.groupName}
       </div>

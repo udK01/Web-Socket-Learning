@@ -8,7 +8,7 @@ export const ScreenProvider = ({ children }) => {
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
-      setIsSmallScreen(width <= 768);
+      setIsSmallScreen(width < 769);
     };
 
     checkScreenSize();

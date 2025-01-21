@@ -26,12 +26,12 @@ export default function App() {
         <div
           className={`${
             isSmallScreen
-              ? `transform transition-transform duration-500 ease-in-out ${
+              ? `transform transition-all duration-500 ease-in-out ${
                   show
                     ? "translate-x-0 w-[40%] opacity-100"
                     : "-translate-x-full w-[0%] opacity-0"
                 }`
-              : "w-[20%]"
+              : "w-[20%] opacity-100"
           } dark:bg-secondary bg-secondary_light`}
         >
           <ChatGroups />
@@ -40,7 +40,7 @@ export default function App() {
 
         <div
           className={`${
-            isSmallScreen ? "w-full" : "w-[80%]"
+            isSmallScreen ? "w-[100%]" : "w-[80%]"
           } dark:bg-background bg-background_light `}
         >
           <Log />
