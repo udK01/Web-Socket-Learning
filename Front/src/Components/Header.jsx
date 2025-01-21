@@ -17,9 +17,7 @@ export default function Header({ show, setShow }) {
         } flex justify-center items-center px-10`}
       >
         {isSmallScreen ? (
-          <div onClick={() => setShow(!show)}>
-            <Hamburger />
-          </div>
+          <Hamburger show={show} setShow={setShow} />
         ) : (
           <>
             <GoogleAuth />

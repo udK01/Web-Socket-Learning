@@ -1,12 +1,11 @@
 import { useRef, useState } from "react";
-import { CiCirclePlus } from "react-icons/ci";
 import { ImBin } from "react-icons/im";
 
 import { useWebSocket } from "../Providers/WebSocketProvider";
 import { useGroup } from "../Providers/GroupProvider";
 import { useUser } from "../Providers/UserProvider";
 
-export default function ChatGroups() {
+export default function ChatGroups({ setShow }) {
   const { groups, selectedGroup, setSelectedGroup } = useGroup();
 
   const [showCreate, setShowCreate] = useState(false);
@@ -23,7 +22,10 @@ export default function ChatGroups() {
             ? "dark:bg-primary bg-primary_light"
             : ""
         }`}
-        onClick={() => setSelectedGroup(group)}
+        onClick={() => {
+          setSelectedGroup(group);
+          setShow(false);
+        }}
       >
         <div className="flex gap-2 py-2 px-4">
           <img src={group.groupImg} className="flex flex-shrink-0" />

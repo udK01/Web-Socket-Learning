@@ -18,8 +18,8 @@ export default function App() {
   }, [isSmallScreen]);
 
   return (
-    <section className="h-screen flex flex-col justify-center items-center text-black dark:text-white">
-      <div className="w-full h-[8%]">
+    <section className="h-screen min-h-[700px] flex flex-col justify-center items-center text-black dark:text-white">
+      <div className="w-full h-[8%] min-h-[80px]">
         <Header show={show} setShow={setShow} />
       </div>
       <div className="flex w-full h-[92%] dark:bg-background bg-background_light">
@@ -34,14 +34,14 @@ export default function App() {
               : "w-[20%] opacity-100"
           } dark:bg-secondary bg-secondary_light`}
         >
-          <ChatGroups />
+          <ChatGroups setShow={setShow} />
           <User />
         </div>
 
         <div
           className={`${
             isSmallScreen ? "w-[100%]" : "w-[80%]"
-          } dark:bg-background bg-background_light `}
+          } dark:bg-background bg-background_light`}
         >
           <Log />
         </div>
