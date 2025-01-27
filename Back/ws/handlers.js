@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import Message from "../models/message.js";
-import { v4 as uuidv4 } from "uuid";
+import Group from "../models/group.js";
 
 export async function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
@@ -41,17 +41,22 @@ export async function handleReply(userID, parsedData, users, groups, wss) {
   }
 }
 
-export function handleCreateGroup(userID, parsedData, groups, wss) {
+export async function handleCreateGroup(userID, parsedData, groups, wss) {
   const group = {
-    groupID: uuidv4(),
     groupOwner: userID,
     groupName: parsedData.groupName,
     groupImg: "./vite.svg",
     messages: [],
   };
 
-  groups.push(group);
-  updateGroups(groups, wss);
+  try {
+    const newGroup = new Group(group);
+    const savedGroup = await newGroup.save();
+    groups.push(savedGroup);
+    updateGroups(groups, wss);
+  } catch (error) {
+    console.log("Error adding message:", error);
+  }
 }
 
 export function handleDeleteGroup(parsedData, groups, wss) {
@@ -169,7 +174,7 @@ export function handleClearSelected(wss) {
 function logMessage(fullMessage, groups, wss) {
   // Add To Log.
   groups
-    .find((group) => group.groupID === fullMessage.groupID)
+    .find((group) => group._id.toString() === fullMessage.groupID.toString())
     .messages.push(fullMessage);
 
   // Send Full Message To The Front.

@@ -32,7 +32,7 @@ export default function SendMessage({
         ws.send(
           JSON.stringify({
             type: "reply",
-            groupID: selectedGroup.groupID,
+            groupID: selectedGroup._id,
             reply,
             message,
           })
@@ -42,7 +42,7 @@ export default function SendMessage({
         ws.send(
           JSON.stringify({
             type: "edit",
-            groupID: selectedGroup.groupID,
+            groupID: selectedGroup._id,
             edit,
             message,
           })
@@ -52,7 +52,7 @@ export default function SendMessage({
         ws.send(
           JSON.stringify({
             type: "message",
-            groupID: selectedGroup.groupID,
+            groupID: selectedGroup._id,
             message,
           })
         );

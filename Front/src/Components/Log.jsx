@@ -38,7 +38,7 @@ export default function Log() {
 
           setGroups((prevGroups) =>
             prevGroups.map((group) =>
-              group.groupID === groupID
+              group._id === groupID
                 ? {
                     ...group,
                     messages: [...(group.messages || []), parsedData.data],
@@ -47,7 +47,7 @@ export default function Log() {
             )
           );
 
-          if (selectedGroup && selectedGroup.groupID === groupID) {
+          if (selectedGroup && selectedGroup._id === groupID) {
             setMessageData((prev) => [...prev, parsedData.data]);
           }
         } else if (parsedData.type === "edited_messages") {

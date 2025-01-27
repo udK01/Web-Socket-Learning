@@ -2,16 +2,9 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
   groupID: {
-    type: String,
-    required: true,
-    validate: {
-      validator: function (v) {
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-          v
-        );
-      },
-      message: "Invalid UUID format for groupID",
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Group",
+    default: null,
   },
   userID: {
     type: String,
