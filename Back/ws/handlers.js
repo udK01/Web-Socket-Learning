@@ -22,7 +22,7 @@ export async function handleMessages(userID, parsedData, users, groups, wss) {
   }
 }
 
-export function handleReply(userID, parsedData, users, groups, wss) {
+export async function handleReply(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const fullMessage = {
     messageID: uuidv4(),
@@ -30,11 +30,17 @@ export function handleReply(userID, parsedData, users, groups, wss) {
     userID: userID,
     nickname: users[userID].nickname,
     profilePicture: users[userID].profilePicture,
-    parent: parsedData.reply,
+    parent: parsedData.reply._id,
     message: parsedData.message,
   };
 
-  logMessage(fullMessage, groups, wss);
+  try {
+    const newMessage = new Message(fullMessage);
+    const savedMessage = await newMessage.save();
+    logMessage(savedMessage, groups, wss);
+  } catch (error) {
+    console.log("Error adding message:", error);
+  }
 }
 
 export function handleCreateGroup(userID, parsedData, groups, wss) {

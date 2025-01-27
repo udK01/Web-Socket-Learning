@@ -172,7 +172,7 @@ export default function Log() {
   };
 
   const ReplyMessage = ({ msg }) => {
-    const parent = msg.parent;
+    const parent = messageData.find((message) => message._id === msg.parent);
 
     return (
       <>
