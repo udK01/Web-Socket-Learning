@@ -1,7 +1,7 @@
-const WebSocket = require("ws");
-const { v4: uuidv4 } = require("uuid");
+import WebSocket from "ws";
+import { v4 as uuidv4 } from "uuid";
 
-function handleMessages(userID, parsedData, users, groups, wss) {
+export function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
     messageID: uuidv4(),
     groupID: parsedData.groupID,
@@ -15,7 +15,7 @@ function handleMessages(userID, parsedData, users, groups, wss) {
   logMessage(fullMessage, groups, wss);
 }
 
-function handleReply(userID, parsedData, users, groups, wss) {
+export function handleReply(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const fullMessage = {
     messageID: uuidv4(),
@@ -30,7 +30,7 @@ function handleReply(userID, parsedData, users, groups, wss) {
   logMessage(fullMessage, groups, wss);
 }
 
-function handleCreateGroup(userID, parsedData, groups, wss) {
+export function handleCreateGroup(userID, parsedData, groups, wss) {
   const group = {
     groupID: uuidv4(),
     groupOwner: userID,
@@ -43,7 +43,7 @@ function handleCreateGroup(userID, parsedData, groups, wss) {
   updateGroups(groups, wss);
 }
 
-function handleDeleteGroup(parsedData, groups, wss) {
+export function handleDeleteGroup(parsedData, groups, wss) {
   const { groupID } = parsedData.group;
 
   groups.splice(
@@ -55,7 +55,7 @@ function handleDeleteGroup(parsedData, groups, wss) {
   updateGroups(groups, wss);
 }
 
-function handleUserUpdated(userID, parsedData, users, groups, wss) {
+export function handleUserUpdated(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const {
     updatedNickname: updatedNickname,
@@ -97,7 +97,7 @@ function handleUserUpdated(userID, parsedData, users, groups, wss) {
   );
 }
 
-function handleDelete(parsedData, groups, wss) {
+export function handleDelete(parsedData, groups, wss) {
   const { groupID, messageID } = parsedData.selectedMessage;
   const group = groups.find((group) => group.groupID === groupID);
 
@@ -112,7 +112,7 @@ function handleDelete(parsedData, groups, wss) {
   }
 }
 
-function handleEdit(parsedData, groups, wss) {
+export function handleEdit(parsedData, groups, wss) {
   const { messageID, groupID } = parsedData.edit;
   const newMessage = parsedData.message;
 
@@ -143,7 +143,7 @@ function handleEdit(parsedData, groups, wss) {
   }
 }
 
-function handleClearSelected(wss) {
+export function handleClearSelected(wss) {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(
@@ -210,14 +210,3 @@ function updateGroups(groups, wss) {
     }
   });
 }
-
-module.exports = {
-  handleMessages,
-  handleReply,
-  handleUserUpdated,
-  handleDelete,
-  handleEdit,
-  handleCreateGroup,
-  handleDeleteGroup,
-  handleClearSelected,
-};

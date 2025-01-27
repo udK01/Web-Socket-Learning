@@ -1,6 +1,4 @@
-// googleAuth.js
-
-const { OAuth2Client } = require("google-auth-library");
+import { OAuth2Client } from "google-auth-library";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -35,4 +33,4 @@ const googleAuth = (users) => async (req, res, next) => {
   }
 };
 
-module.exports = { googleAuth };
+export { googleAuth };

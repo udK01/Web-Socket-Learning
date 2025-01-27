@@ -1,6 +1,6 @@
-const WebSocket = require("ws");
-const { v4: uuidv4 } = require("uuid");
-const {
+import { WebSocketServer } from "ws";
+import { v4 as uuidv4 } from "uuid";
+import {
   handleMessages,
   handleReply,
   handleUserUpdated,
@@ -9,10 +9,10 @@ const {
   handleCreateGroup,
   handleDeleteGroup,
   handleClearSelected,
-} = require("./handlers");
+} from "./handlers.js";
 
-module.exports = (users, groups) => {
-  const wss = new WebSocket.Server({ port: 8080 });
+export default (users, groups) => {
+  const wss = new WebSocketServer({ port: 8080 });
 
   wss.on("connection", (ws) => {
     const userID = uuidv4();
@@ -23,7 +23,6 @@ module.exports = (users, groups) => {
 
     users[userID] = { nickname, profilePicture };
 
-    // Send initial data to the client
     ws.send(JSON.stringify({ type: "groups", groups }));
     ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
 
@@ -60,18 +59,6 @@ module.exports = (users, groups) => {
 
     ws.on("close", () => {
       console.log(`Client with ID ${userID} has disconnected.`);
-
-      // if (users[userID]?.profilePicture !== "base.png") {
-      //   const imagePath = `../Front/public/${users[userID].profilePicture}`;
-      //   require("fs").unlink(imagePath, (err) => {
-      //     if (err) {
-      //       console.error(`Error deleting image: ${imagePath}`, err);
-      //     } else {
-      //       console.log(`Image deleted successfully: ${imagePath}`);
-      //     }
-      //   });
-      // }
-
       delete users[userID];
     });
   });

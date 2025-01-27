@@ -1,4 +1,4 @@
-const multer = require("multer");
+import multer from "multer";
 
 // Set up storage engine
 const storage = multer.diskStorage({
@@ -24,4 +24,4 @@ const profileUpload = (req, res, next) => {
   });
 };
 
-module.exports = { profileUpload };
+export { profileUpload };

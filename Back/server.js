@@ -1,12 +1,14 @@
-const session = require("express-session");
-const passport = require("passport");
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
+import connectDB from "./config/db.js";
 
-const initializeWebSocket = require("./ws/websocket");
-const { profileUpload } = require("./routes/upload");
-const { googleAuth } = require("./routes/googleAuth");
+import session from "express-session";
+import passport from "passport";
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+
+import initializeWebSocket from "./ws/websocket.js";
+import { profileUpload } from "./routes/upload.js";
+import { googleAuth } from "./routes/googleAuth.js";
 
 dotenv.config();
 const app = express();
@@ -23,6 +25,8 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+connectDB();
 
 let users = {};
 let groups = [];
