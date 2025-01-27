@@ -1,7 +1,8 @@
 import WebSocket from "ws";
+import Message from "../models/message.js";
 import { v4 as uuidv4 } from "uuid";
 
-export function handleMessages(userID, parsedData, users, groups, wss) {
+export async function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
     messageID: uuidv4(),
     groupID: parsedData.groupID,
@@ -12,7 +13,13 @@ export function handleMessages(userID, parsedData, users, groups, wss) {
     message: parsedData.message,
   };
 
-  logMessage(fullMessage, groups, wss);
+  try {
+    const newMessage = new Message(fullMessage);
+    const savedMessage = await newMessage.save();
+    logMessage(savedMessage, groups, wss);
+  } catch (error) {
+    console.log("Error adding message:", error);
+  }
 }
 
 export function handleReply(userID, parsedData, users, groups, wss) {
