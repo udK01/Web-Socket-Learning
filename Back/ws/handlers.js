@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
-    messageID: uuidv4(),
     groupID: parsedData.groupID,
     userID,
     nickname: users[userID].nickname,
@@ -25,7 +24,6 @@ export async function handleMessages(userID, parsedData, users, groups, wss) {
 export async function handleReply(userID, parsedData, users, groups, wss) {
   // Destructure Data Received.
   const fullMessage = {
-    messageID: uuidv4(),
     groupID: parsedData.groupID,
     userID: userID,
     nickname: users[userID].nickname,
