@@ -64,11 +64,13 @@ export async function handleDeleteGroup(parsedData, groups, wss) {
 
   try {
     await Group.findByIdAndDelete(_id);
+
     groups.splice(
       0,
       groups.length,
       ...groups.filter((group) => group._id.toString() !== _id.toString())
     );
+
     updateGroups(groups, wss);
   } catch (error) {
     console.log("Failed to delete group:", error);
@@ -117,18 +119,26 @@ export function handleUserUpdated(userID, parsedData, users, groups, wss) {
   );
 }
 
-export function handleDelete(parsedData, groups, wss) {
-  const { groupID, messageID } = parsedData.selectedMessage;
-  const group = groups.find((group) => group.groupID === groupID);
+export async function handleDelete(parsedData, groups, wss) {
+  const { groupID, _id } = parsedData.selectedMessage;
+  const group = groups.find(
+    (group) => group._id.toString() === groupID.toString()
+  );
 
-  if (group) {
-    const filteredMessages = group.messages.filter(
-      (msg) => msg.messageID !== messageID
-    );
+  try {
+    if (group) {
+      await Message.findByIdAndDelete(_id);
 
-    group.messages = [...filteredMessages];
+      const filteredMessages = group.messages.filter(
+        (msg) => msg._id.toString() !== _id.toString()
+      );
 
-    updateHistory(filteredMessages, wss);
+      group.messages = [...filteredMessages];
+
+      updateHistory(filteredMessages, wss);
+    }
+  } catch (error) {
+    console.log("Failed to delete message:", error);
   }
 }
 
@@ -163,18 +173,6 @@ export function handleEdit(parsedData, groups, wss) {
   }
 }
 
-export function handleClearSelected(wss) {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(
-        JSON.stringify({
-          type: "clear_selected",
-        })
-      );
-    }
-  });
-}
-
 export async function initialiseGroups() {
   try {
     const groups = await Group.find();
@@ -190,6 +188,18 @@ export async function initialiseGroups() {
   } catch (err) {
     console.error("Error fetching groups:", err);
   }
+}
+
+export function handleClearSelected(wss) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(
+        JSON.stringify({
+          type: "clear_selected",
+        })
+      );
+    }
+  });
 }
 
 function logMessage(fullMessage, groups, wss) {

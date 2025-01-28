@@ -54,7 +54,7 @@ export default async (users) => {
           await handleDeleteGroup(parsedData, groups, wss);
           break;
         case "clear_selected":
-          await handleClearSelected(wss);
+          handleClearSelected(wss);
           break;
       }
     });
