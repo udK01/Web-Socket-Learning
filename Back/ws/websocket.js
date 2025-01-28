@@ -42,10 +42,10 @@ export default async (users) => {
           await handleReply(userID, parsedData, users, groups, wss);
           break;
         case "edit":
-          handleEdit(parsedData, groups, wss);
+          await handleEdit(parsedData, groups, wss);
           break;
         case "delete":
-          handleDelete(parsedData, groups, wss);
+          await handleDelete(parsedData, groups, wss);
           break;
         case "create_group":
           await handleCreateGroup(userID, parsedData, groups, wss);

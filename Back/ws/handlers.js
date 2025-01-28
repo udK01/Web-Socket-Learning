@@ -142,34 +142,29 @@ export async function handleDelete(parsedData, groups, wss) {
   }
 }
 
-export function handleEdit(parsedData, groups, wss) {
-  const { messageID, groupID } = parsedData.edit;
+export async function handleEdit(parsedData, groups, wss) {
+  const { _id, groupID } = parsedData.edit;
   const newMessage = parsedData.message;
 
-  const group = groups.find((group) => group.groupID === groupID);
+  const group = groups.find(
+    (group) => group._id.toString() === groupID.toString()
+  );
 
-  if (group) {
-    // Update the target message
-    group.messages = group.messages.map((msg) =>
-      msg.messageID === messageID ? { ...msg, message: newMessage } : msg
-    );
+  try {
+    if (group) {
+      await Message.findByIdAndUpdate(_id, { message: newMessage });
 
-    // Update any messages that reference the updated message as a parent
-    group.messages = group.messages.map((msg) => {
-      if (msg.parent && msg.parent.messageID === messageID) {
-        return {
-          ...msg,
-          parent: {
-            ...msg.parent,
-            message: newMessage,
-          },
-        };
-      }
-      return msg;
-    });
+      group.messages.forEach((msg) => {
+        if (msg._id.toString() === _id.toString()) {
+          msg.message = newMessage;
+        }
+      });
 
-    // Push updated group messages to history
-    updateHistory(group.messages, wss);
+      // Push updated group messages to history
+      updateHistory(group.messages, wss);
+    }
+  } catch (error) {
+    console.log("Failed to edit message:", error);
   }
 }
 
