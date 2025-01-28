@@ -107,7 +107,7 @@ export default function ChatGroups({ setShow }) {
       })
     );
 
-    if (selectedGroup.groupID === group.groupID) {
+    if (selectedGroup._id === group._id) {
       ws.send(
         JSON.stringify({
           type: "clear_selected",
@@ -119,7 +119,6 @@ export default function ChatGroups({ setShow }) {
   return (
     <div className="w-full h-[90%] flex flex-col justify-between">
       <div className="overflow-auto scrollbar-none">
-        {console.log(groups)}
         {groups &&
           groups.map((group, i) => <DisplayGroup key={i} group={group} />)}
       </div>

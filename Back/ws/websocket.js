@@ -28,18 +28,18 @@ export default async (users) => {
     ws.send(JSON.stringify({ type: "groups", groups }));
     ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
 
-    ws.on("message", (data) => {
+    ws.on("message", async (data) => {
       const parsedData = JSON.parse(data);
 
       switch (parsedData.type) {
         case "message":
-          handleMessages(userID, parsedData, users, groups, wss);
+          await handleMessages(userID, parsedData, users, groups, wss);
           break;
         case "update_user":
           handleUserUpdated(userID, parsedData, users, groups, wss);
           break;
         case "reply":
-          handleReply(userID, parsedData, users, groups, wss);
+          await handleReply(userID, parsedData, users, groups, wss);
           break;
         case "edit":
           handleEdit(parsedData, groups, wss);
@@ -48,13 +48,13 @@ export default async (users) => {
           handleDelete(parsedData, groups, wss);
           break;
         case "create_group":
-          handleCreateGroup(userID, parsedData, groups, wss);
+          await handleCreateGroup(userID, parsedData, groups, wss);
           break;
         case "delete_group":
-          handleDeleteGroup(parsedData, groups, wss);
+          await handleDeleteGroup(parsedData, groups, wss);
           break;
         case "clear_selected":
-          handleClearSelected(wss);
+          await handleClearSelected(wss);
           break;
       }
     });

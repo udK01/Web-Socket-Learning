@@ -59,16 +59,20 @@ export async function handleCreateGroup(userID, parsedData, groups, wss) {
   }
 }
 
-export function handleDeleteGroup(parsedData, groups, wss) {
-  const { groupID } = parsedData.group;
+export async function handleDeleteGroup(parsedData, groups, wss) {
+  const { _id } = parsedData.group;
 
-  groups.splice(
-    0,
-    groups.length,
-    ...groups.filter((group) => group.groupID !== groupID)
-  );
-
-  updateGroups(groups, wss);
+  try {
+    await Group.findByIdAndDelete(_id);
+    groups.splice(
+      0,
+      groups.length,
+      ...groups.filter((group) => group._id.toString() !== _id.toString())
+    );
+    updateGroups(groups, wss);
+  } catch (error) {
+    console.log("Failed to delete group:", error);
+  }
 }
 
 export function handleUserUpdated(userID, parsedData, users, groups, wss) {
