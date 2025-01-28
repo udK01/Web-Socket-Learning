@@ -9,10 +9,12 @@ import {
   handleCreateGroup,
   handleDeleteGroup,
   handleClearSelected,
+  initialiseGroups,
 } from "./handlers.js";
 
-export default (users, groups) => {
+export default async (users) => {
   const wss = new WebSocketServer({ port: 8080 });
+  let groups = await initialiseGroups();
 
   wss.on("connection", (ws) => {
     const userID = uuidv4();

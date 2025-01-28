@@ -119,6 +119,7 @@ export default function ChatGroups({ setShow }) {
   return (
     <div className="w-full h-[90%] flex flex-col justify-between">
       <div className="overflow-auto scrollbar-none">
+        {console.log(groups)}
         {groups &&
           groups.map((group, i) => <DisplayGroup key={i} group={group} />)}
       </div>

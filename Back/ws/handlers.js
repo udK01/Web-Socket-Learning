@@ -171,6 +171,23 @@ export function handleClearSelected(wss) {
   });
 }
 
+export async function initialiseGroups() {
+  try {
+    const groups = await Group.find();
+
+    await Promise.all(
+      groups.map(async (group) => {
+        const messages = await Message.find({ groupID: group._id });
+        group.messages.push(...messages);
+      })
+    );
+
+    return groups;
+  } catch (err) {
+    console.error("Error fetching groups:", err);
+  }
+}
+
 function logMessage(fullMessage, groups, wss) {
   // Add To Log.
   groups
