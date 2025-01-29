@@ -1,6 +1,7 @@
 import WebSocket from "ws";
 import Message from "../models/message.js";
 import Group from "../models/group.js";
+import User from "../models/user.js";
 
 export async function handleMessages(userID, parsedData, users, groups, wss) {
   const fullMessage = {
@@ -195,6 +196,16 @@ export function handleClearSelected(wss) {
       );
     }
   });
+}
+
+export async function addNewUser() {
+  try {
+    const newUser = new User();
+    const savedUser = await newUser.save();
+    return savedUser;
+  } catch (error) {
+    console.log("Failed to make new user:", error);
+  }
 }
 
 function logMessage(fullMessage, groups, wss) {

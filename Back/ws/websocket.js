@@ -10,23 +10,27 @@ import {
   handleDeleteGroup,
   handleClearSelected,
   initialiseGroups,
+  addNewUser,
 } from "./handlers.js";
 
 export default async (users) => {
   const wss = new WebSocketServer({ port: 8080 });
   let groups = await initialiseGroups();
 
-  wss.on("connection", (ws) => {
-    const userID = uuidv4();
-    const nickname = "Anonymous";
-    const profilePicture = "base.png";
+  wss.on("connection", async (ws) => {
+    // const userID = uuidv4();
+    // const nickname = "Anonymous";
+    // const profilePicture = "base.png";
 
-    console.log(`New client connected with ID: ${userID}`);
+    // console.log(`New client connected with ID: ${userID}`);
+    const user = await addNewUser();
 
-    users[userID] = { nickname, profilePicture };
+    // users[userID] = { nickname, profilePicture }; // await addNewUser();
+    users.push(user);
 
     ws.send(JSON.stringify({ type: "groups", groups }));
-    ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
+    // ws.send(JSON.stringify({ type: "user", userID, nickname, profilePicture }));
+    ws.send(JSON.stringify({ type: "user", user }));
 
     ws.on("message", async (data) => {
       const parsedData = JSON.parse(data);
@@ -59,10 +63,10 @@ export default async (users) => {
       }
     });
 
-    ws.on("close", () => {
-      console.log(`Client with ID ${userID} has disconnected.`);
-      delete users[userID];
-    });
+    // ws.on("close", () => {
+    //   console.log(`Client with ID ${userID} has disconnected.`);
+    //   delete users[userID];
+    // });
   });
 
   console.log("WebSocket server running on ws://localhost:8080");

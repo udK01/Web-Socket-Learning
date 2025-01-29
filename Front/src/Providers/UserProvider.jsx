@@ -17,8 +17,8 @@ export const UserProvider = ({ children }) => {
       const data = JSON.parse(event.data);
 
       if (data.type === "user") {
-        const { userID, nickname, profilePicture } = data;
-        setUserID(userID);
+        const { _id, nickname, profilePicture } = data.user;
+        setUserID(_id.toString());
         setNickname(nickname);
         setProfilePicture(profilePicture);
       }

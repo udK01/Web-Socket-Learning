@@ -28,7 +28,7 @@ app.use(passport.session());
 
 connectDB();
 
-let users = {};
+let users = [];
 
 // Google Auth
 app.post("/api/auth/google", googleAuth(users), (req, res) => {
