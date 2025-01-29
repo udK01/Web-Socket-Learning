@@ -13,6 +13,17 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     if (!ws) return;
 
+    let sessionID = sessionStorage.getItem("sessionID");
+
+    if (!sessionID) {
+      sessionID = crypto.randomUUID(); // Generate new session ID
+      sessionStorage.setItem("sessionID", sessionID);
+    }
+
+    ws.addEventListener("open", () => {
+      ws.send(JSON.stringify({ type: "session", sessionID })); // Send sessionID to server
+    });
+
     const handleMessage = (event) => {
       const data = JSON.parse(event.data);
 

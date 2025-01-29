@@ -4,14 +4,6 @@ const groupSchema = new mongoose.Schema({
   groupOwner: {
     type: String,
     required: true,
-    validate: {
-      validator: function (v) {
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-          v
-        );
-      },
-      message: "Invalid UUID format for groupOwner",
-    },
   },
   groupName: {
     type: String,

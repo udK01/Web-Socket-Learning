@@ -3,12 +3,12 @@ import Message from "../models/message.js";
 import Group from "../models/group.js";
 import User from "../models/user.js";
 
-export async function handleMessages(userID, parsedData, users, groups, wss) {
+export async function handleMessages(user, parsedData, groups, wss) {
   const fullMessage = {
     groupID: parsedData.groupID,
-    userID,
-    nickname: users[userID].nickname,
-    profilePicture: users[userID].profilePicture,
+    userID: user._id,
+    nickname: user.nickname,
+    profilePicture: user.profilePicture,
     parent: null,
     message: parsedData.message,
   };
@@ -210,9 +210,11 @@ export async function addNewUser() {
 
 function logMessage(fullMessage, groups, wss) {
   // Add To Log.
-  groups
-    .find((group) => group._id.toString() === fullMessage.groupID.toString())
-    .messages.push(fullMessage);
+  const group = groups.find(
+    (group) => group._id.toString() === fullMessage.groupID.toString()
+  );
+
+  group.messages.push(fullMessage);
 
   // Send Full Message To The Front.
   wss.clients.forEach((client) => {

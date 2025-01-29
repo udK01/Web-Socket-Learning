@@ -7,16 +7,9 @@ const messageSchema = new mongoose.Schema({
     default: null,
   },
   userID: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
-    validate: {
-      validator: function (v) {
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-          v
-        );
-      },
-      message: "Invalid UUID format for userID",
-    },
   },
   nickname: {
     type: String,
