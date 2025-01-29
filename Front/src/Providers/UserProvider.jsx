@@ -16,12 +16,12 @@ export const UserProvider = ({ children }) => {
     let sessionID = sessionStorage.getItem("sessionID");
 
     if (!sessionID) {
-      sessionID = crypto.randomUUID(); // Generate new session ID
+      sessionID = crypto.randomUUID();
       sessionStorage.setItem("sessionID", sessionID);
     }
 
     ws.addEventListener("open", () => {
-      ws.send(JSON.stringify({ type: "session", sessionID })); // Send sessionID to server
+      ws.send(JSON.stringify({ type: "session", sessionID }));
     });
 
     const handleMessage = (event) => {

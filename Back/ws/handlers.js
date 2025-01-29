@@ -1,7 +1,6 @@
 import WebSocket from "ws";
 import Message from "../models/message.js";
 import Group from "../models/group.js";
-import User from "../models/user.js";
 
 export async function handleMessages(user, parsedData, groups, wss) {
   const fullMessage = {
@@ -22,13 +21,13 @@ export async function handleMessages(user, parsedData, groups, wss) {
   }
 }
 
-export async function handleReply(userID, parsedData, users, groups, wss) {
+export async function handleReply(user, parsedData, groups, wss) {
   // Destructure Data Received.
   const fullMessage = {
     groupID: parsedData.groupID,
-    userID: userID,
-    nickname: users[userID].nickname,
-    profilePicture: users[userID].profilePicture,
+    userID: user._id,
+    nickname: user.nickname,
+    profilePicture: user.profilePicture,
     parent: parsedData.reply._id,
     message: parsedData.message,
   };
@@ -42,9 +41,9 @@ export async function handleReply(userID, parsedData, users, groups, wss) {
   }
 }
 
-export async function handleCreateGroup(userID, parsedData, groups, wss) {
+export async function handleCreateGroup(user, parsedData, groups, wss) {
   const group = {
-    groupOwner: userID,
+    groupOwner: user._id,
     groupName: parsedData.groupName,
     groupImg: "./vite.svg",
     messages: [],
@@ -196,16 +195,6 @@ export function handleClearSelected(wss) {
       );
     }
   });
-}
-
-export async function addNewUser() {
-  try {
-    const newUser = new User();
-    const savedUser = await newUser.save();
-    return savedUser;
-  } catch (error) {
-    console.log("Failed to make new user:", error);
-  }
 }
 
 function logMessage(fullMessage, groups, wss) {

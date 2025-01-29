@@ -34,17 +34,15 @@ export default async (users) => {
         ws.send(JSON.stringify({ type: "groups", groups }));
       }
 
-      let userID = user._id.toString();
-
       switch (parsedData.type) {
         case "message":
           await handleMessages(user, parsedData, groups, wss);
           break;
         case "update_user":
-          handleUserUpdated(user, parsedData, users, groups, wss);
+          handleUserUpdated(user, parsedData, groups, wss);
           break;
         case "reply":
-          await handleReply(user, parsedData, users, groups, wss);
+          await handleReply(user, parsedData, groups, wss);
           break;
         case "edit":
           await handleEdit(parsedData, groups, wss);
