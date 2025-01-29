@@ -28,6 +28,7 @@ const User = () => {
         },
       });
       setProfilePicture(response.data);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -41,11 +42,19 @@ const User = () => {
     const newProfilePicture = fileInputRef.current.files[0];
 
     try {
-      let profilePictureResponse = null;
+      let profilePictureResponse = profilePicture;
 
       if (newProfilePicture) {
         profilePictureResponse = await handleProfilePictureChange(
           newProfilePicture
+        );
+        ws.send(
+          JSON.stringify({
+            type: "update_user",
+            updatedNickname: nickname,
+            updatedProfilePicture: profilePictureResponse,
+            groupID: selectedGroup._id.toString(),
+          })
         );
       }
 
@@ -58,7 +67,7 @@ const User = () => {
               type: "update_user",
               updatedNickname: newNick,
               updatedProfilePicture: profilePictureResponse,
-              groupID: selectedGroup.groupID,
+              groupID: selectedGroup._id.toString(),
             })
           );
         }

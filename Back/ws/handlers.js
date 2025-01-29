@@ -1,6 +1,7 @@
 import WebSocket from "ws";
 import Message from "../models/message.js";
 import Group from "../models/group.js";
+import User from "../models/user.js";
 
 export async function handleMessages(user, parsedData, groups, wss) {
   const fullMessage = {
@@ -77,46 +78,49 @@ export async function handleDeleteGroup(parsedData, groups, wss) {
   }
 }
 
-export function handleUserUpdated(userID, parsedData, users, groups, wss) {
-  // Destructure Data Received.
-  const {
-    updatedNickname: updatedNickname,
-    updatedProfilePicture: updatedProfilePicture,
-    groupID: groupID,
-  } = parsedData;
+export async function handleUserUpdated(user, parsedData, groups, wss) {
+  // Destructure Data
+  const { updatedNickname, updatedProfilePicture, groupID } = parsedData;
 
   // Alter User.
-  if (users[userID]) {
-    users[userID].nickname = updatedNickname;
-    users[userID].profilePicture = updatedProfilePicture;
+  user.nickname = updatedNickname;
+  user.profilePicture = updatedProfilePicture;
+
+  try {
+    await User.findByIdAndUpdate(user._id, {
+      nickname: updatedNickname,
+      profilePicture: updatedProfilePicture,
+    });
+
+    // Alter Parent Messages in Groups.
+    groups.forEach((group) => {
+      group.messages.forEach((msg) => {
+        if (msg.parent && msg.parent._id.toString() === user._id.toString()) {
+          msg.parent.nickname = updatedNickname;
+          msg.parent.profilePicture = updatedProfilePicture;
+        }
+      });
+    });
+
+    // Alter Regular Messages in Groups.
+    groups.forEach((group) => {
+      group.messages.forEach((msg) => {
+        if (msg.userID.toString() === user._id.toString()) {
+          msg.nickname = updatedNickname;
+          msg.profilePicture = updatedProfilePicture;
+        }
+      });
+    });
+
+    updateGroups(groups, wss);
+
+    updateHistory(
+      groups.find((group) => group._id.toString() === groupID).messages,
+      wss
+    );
+  } catch (error) {
+    console.log("Failed to update user:", error);
   }
-
-  // Alter Parent Messages in Groups.
-  groups.forEach((group) => {
-    group.messages.forEach((msg) => {
-      if (msg.parent && msg.parent.userID === userID) {
-        msg.parent.nickname = updatedNickname;
-        msg.parent.profilePicture = updatedProfilePicture;
-      }
-    });
-  });
-
-  // Alter Regular Messages in Groups.
-  groups.forEach((group) => {
-    group.messages.forEach((msg) => {
-      if (msg.userID === userID) {
-        msg.nickname = updatedNickname;
-        msg.profilePicture = updatedProfilePicture;
-      }
-    });
-  });
-
-  updateGroups(groups, wss);
-
-  updateHistory(
-    groups.find((group) => group.groupID === groupID).messages,
-    wss
-  );
 }
 
 export async function handleDelete(parsedData, groups, wss) {

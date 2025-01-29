@@ -53,7 +53,8 @@ app.post("/upload", profileUpload, (req, res) => {
 
   res.status(200).json(req.file.filename);
 
-  users[userID].profilePicture = req.file.filename;
+  users.find((user) => user._id.toString() === userID).profilePicture =
+    req.file.filename;
 });
 
 // Start Express Server
