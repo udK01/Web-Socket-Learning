@@ -20,6 +20,7 @@ const User = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("userID", userID);
+    formData.append("profilePicture", profilePicture);
 
     try {
       const response = await axios.post(`/upload`, formData, {
@@ -28,7 +29,6 @@ const User = () => {
         },
       });
       setProfilePicture(response.data);
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -53,7 +53,7 @@ const User = () => {
             type: "update_user",
             updatedNickname: nickname,
             updatedProfilePicture: profilePictureResponse,
-            groupID: selectedGroup._id.toString(),
+            groupID: selectedGroup?._id.toString() || null,
           })
         );
       }
@@ -67,7 +67,7 @@ const User = () => {
               type: "update_user",
               updatedNickname: newNick,
               updatedProfilePicture: profilePictureResponse,
-              groupID: selectedGroup._id.toString(),
+              groupID: selectedGroup?._id.toString() || null,
             })
           );
         }

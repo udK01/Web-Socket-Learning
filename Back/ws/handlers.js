@@ -114,10 +114,12 @@ export async function handleUserUpdated(user, parsedData, groups, wss) {
 
     updateGroups(groups, wss);
 
-    updateHistory(
-      groups.find((group) => group._id.toString() === groupID).messages,
-      wss
-    );
+    if (groupID !== null) {
+      updateHistory(
+        groups.find((group) => group._id.toString() === groupID).messages,
+        wss
+      );
+    }
   } catch (error) {
     console.log("Failed to update user:", error);
   }

@@ -1,4 +1,6 @@
 import multer from "multer";
+import fs from "fs";
+import path from "path";
 
 // Set up storage engine
 const storage = multer.diskStorage({
@@ -20,6 +22,16 @@ const profileUpload = (req, res, next) => {
     if (err) {
       return res.status(400).json({ message: "Error uploading file" });
     }
+
+    const oldFilePath = path.join("../Front/public/", req.body.profilePicture);
+    if (fs.existsSync(oldFilePath) && req.body.profilePicture !== "base.png") {
+      fs.unlink(oldFilePath, (err) => {
+        if (err) {
+          console.error("Error deleting old profile picture:", err);
+        }
+      });
+    }
+
     next();
   });
 };

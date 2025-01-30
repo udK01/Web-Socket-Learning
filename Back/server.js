@@ -45,16 +45,15 @@ app.post("/api/auth/google", googleAuth(users), (req, res) => {
 
 // Express Route for File Upload
 app.post("/upload", profileUpload, (req, res) => {
-  const userID = req.body.userID;
+  const user = users.find((user) => user._id.toString() === req.body.userID);
 
-  if (!req.file || !userID) {
+  if (!req.file || !user) {
     return res.status(400).json({ message: "File or userID is missing" });
   }
 
   res.status(200).json(req.file.filename);
 
-  users.find((user) => user._id.toString() === userID).profilePicture =
-    req.file.filename;
+  user.profilePicture = req.file.filename;
 });
 
 // Start Express Server
