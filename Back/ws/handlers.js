@@ -64,8 +64,13 @@ export async function handleDeleteGroup(parsedData, groups, wss) {
   const { _id } = parsedData.group;
 
   try {
+    // Delete Group From DB.
     await Group.findByIdAndDelete(_id);
 
+    // Remove Related Messages From DB.
+    await Message.deleteMany({ groupID: _id });
+
+    // Remove Group From Array.
     groups.splice(
       0,
       groups.length,
