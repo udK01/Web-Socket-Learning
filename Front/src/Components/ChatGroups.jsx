@@ -51,8 +51,8 @@ export default function ChatGroups({ setShow }) {
 
   const CreateGroupUI = () => {
     return (
-      <div className="absolute top-0 left-0 flex justify-center items-center w-screen h-full">
-        <div className="absolute min-w-[200px] dark:bg-secondary bg-secondary_light size-[20%] flex flex-col justify-center items-center ring-4 rounded-md dark:ring-tertiary ring-tertiary_light">
+      <div className="absolute top-0 left-0 flex justify-center items-center w-screen h-full dark:bg-tertiary/50 bg-primary_light/50">
+        <div className="absolute min-w-[300px] dark:bg-secondary bg-secondary_light size-[20%] flex flex-col justify-center items-center ring-4 rounded-md dark:ring-tertiary ring-tertiary_light">
           <div>
             <input
               ref={groupRef}

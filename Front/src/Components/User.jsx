@@ -100,7 +100,7 @@ const User = () => {
 
   const DisplayEdit = () => {
     return (
-      <div className="absolute top-0 left-0 flex justify-center items-center w-screen h-full">
+      <div className="absolute top-0 left-0 flex justify-center items-center w-screen h-full dark:bg-tertiary/50 bg-primary_light/50">
         <div className="relative w-[30%] max-w-[300px] min-w-[250px] bg-primary_light dark:bg-primary bg-opacity-50 ring-4 rounded-md dark:ring-tertiary ring-tertiary_light">
           <button
             className="absolute top-2 right-2 dark:bg-primary bg-primary_light dark:hover:bg-tertiary hover:bg-tertiary_light rounded-full size-8 flex justify-center items-center"
