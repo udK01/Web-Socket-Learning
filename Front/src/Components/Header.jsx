@@ -13,24 +13,23 @@ export default function Header({ show, setShow }) {
     <div className="w-full h-[80px] flex items-center bg-primary_light dark:bg-primary">
       <div
         className={`${
-          isSmallScreen ? "w-[30%] justify-center" : "w-[20%] justify-between"
-        } flex items-center px-10`}
+          isSmallScreen ? "w-[30%]" : "w-[20%]"
+        } flex justify-center items-center px-10`}
       >
-        {isSmallScreen ? (
-          <Hamburger show={show} setShow={setShow} />
-        ) : (
-          <>
-            <GoogleAuth />
-            <ThemeSwitcher />
-          </>
-        )}
+        {isSmallScreen && <Hamburger show={show} setShow={setShow} />}
       </div>
+
       <div
         className={`${
           isSmallScreen ? "w-[70%]" : "w-[80%]"
         } text-[32px] line-clamp-1`}
       >
-        {selectedGroup && selectedGroup.groupName}
+        <div className="flex w-full justify-between px-4">
+          <div className="w-[70%] overflow-hidden whitespace-nowrap text-ellipsis">
+            {selectedGroup && selectedGroup.groupName}
+          </div>
+          <ThemeSwitcher />
+        </div>
       </div>
     </div>
   );

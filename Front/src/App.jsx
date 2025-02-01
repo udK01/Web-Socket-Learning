@@ -28,7 +28,7 @@ export default function App() {
             isSmallScreen
               ? `transform transition-all duration-500 ease-in-out ${
                   show
-                    ? "translate-x-0 w-[40%] opacity-100"
+                    ? "translate-x-0 w-[30%] opacity-100"
                     : "-translate-x-full w-[0%] opacity-0"
                 }`
               : "w-[20%] opacity-100"

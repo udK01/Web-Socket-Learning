@@ -61,7 +61,7 @@ export default function GoogleAuth() {
         onSuccess={handleLogin}
         onError={() => console.log("Login Failed")}
         theme="outline"
-        size="large"
+        size="medium"
         shape="circle"
       />
     </GoogleOAuthProvider>

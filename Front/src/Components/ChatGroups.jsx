@@ -17,7 +17,7 @@ export default function ChatGroups({ setShow }) {
   const DisplayGroup = ({ group }) => {
     return (
       <div
-        className={`h-16 flex items-center justify-between  border-b-4 dark:border-primary border-primary_light hover:cursor-pointer dark:hover:bg-primary hover:bg-primary_light transition-colors duration-300 ${
+        className={`h-16 flex items-center justify-between border-b-4 dark:border-primary border-primary_light hover:cursor-pointer dark:hover:bg-primary hover:bg-primary_light transition-colors duration-300 ${
           group._id === selectedGroup?._id
             ? "dark:bg-primary bg-primary_light"
             : ""
