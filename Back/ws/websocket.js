@@ -12,9 +12,12 @@ import {
 } from "./handlers.js";
 import { getUserBySession } from "./userManager.js";
 
+const wss = new WebSocketServer({ port: 8080 });
+
+export let groups = [];
+
 export default async (users) => {
-  const wss = new WebSocketServer({ port: 8080 });
-  let groups = await initialiseGroups();
+  groups = await initialiseGroups();
 
   wss.on("connection", async (ws) => {
     let user;
@@ -32,6 +35,7 @@ export default async (users) => {
 
         ws.send(JSON.stringify({ type: "user", user }));
         ws.send(JSON.stringify({ type: "groups", groups }));
+        ws.userID = user._id;
       }
 
       switch (parsedData.type) {
@@ -65,3 +69,5 @@ export default async (users) => {
 
   console.log("WebSocket server running on ws://localhost:8080");
 };
+
+export { wss };

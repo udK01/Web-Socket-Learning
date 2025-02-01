@@ -31,13 +31,13 @@ connectDB();
 let users = [];
 
 // Google Auth
-app.post("/api/auth/google", googleAuth(users), (req, res) => {
-  const { userID } = req.body;
-  const user = req.user; // Get user from the request object
+app.post("/api/auth/google", googleAuth, (req, res) => {
+  const userID = req.userID;
+  const googleUser = req.user; // Get user from the request object
 
   // Respond with the user information if login is successful
   if (userID) {
-    res.json({ message: "Login successful", user });
+    res.json({ message: "Login successful", googleUser });
   } else {
     res.status(400).json({ error: "User ID is missing" });
   }
