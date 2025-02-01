@@ -27,9 +27,9 @@ export default function ChatGroups({ setShow }) {
           setShow(false);
         }}
       >
-        <div className="flex gap-2 py-2 px-4">
+        <div className="flex w-[90%] gap-2 py-2 px-4">
           <img src={group.groupImg} className="flex flex-shrink-0" />
-          <div className="text-[20px] truncate max-w-full overflow-hidden">
+          <div className="w-full text-[20px] truncate overflow-hidden">
             {group.groupName}
           </div>
         </div>
