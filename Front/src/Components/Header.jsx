@@ -2,7 +2,6 @@ import { useScreenContext } from "../Providers/ScreenProvider";
 import { useGroup } from "../Providers/GroupProvider";
 
 import ThemeSwitcher from "./ThemeSwitcher";
-import GoogleAuth from "./GoogleAuth";
 import Hamburger from "./Hamburger";
 
 export default function Header({ show, setShow }) {

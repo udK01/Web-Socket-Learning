@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
+import GoogleAuth from "./GoogleAuth";
+
 import { useWebSocket } from "../Providers/WebSocketProvider";
 import { useGroup } from "../Providers/GroupProvider";
 import { useUser } from "../Providers/UserProvider";
@@ -164,6 +166,7 @@ const User = () => {
             X
           </button>
           <div className="flex flex-col h-full items-center justify-center space-y-3 p-2">
+            <GoogleAuth />
             <img
               src={preview || profilePicture}
               className="w-40 h-40 hover:cursor-pointer dark:hover:bg-accent hover:bg-accent_light rounded-full object-cover"
