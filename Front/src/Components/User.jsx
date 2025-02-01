@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import { useWebSocket } from "../Providers/WebSocketProvider";
@@ -15,6 +15,29 @@ const User = () => {
 
   const fileInputRef = useRef(null);
   const nameInputRef = useRef(null);
+  const [preview, setPreview] = useState(profilePicture);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file); // Store the file for submission
+      const imageUrl = URL.createObjectURL(file);
+      setPreview(imageUrl);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (preview && preview !== profilePicture) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
+
+  useEffect(() => {
+    setPreview(profilePicture);
+  }, [profilePicture]);
 
   const handleProfilePictureChange = async (file) => {
     const formData = new FormData();
@@ -39,47 +62,79 @@ const User = () => {
   const handleSubmit = async () => {
     setEdit(false);
     const newNick = nameInputRef.current.value;
-    const newProfilePicture = fileInputRef.current.files[0];
 
     try {
       let profilePictureResponse = profilePicture;
 
-      if (newProfilePicture) {
-        profilePictureResponse = await handleProfilePictureChange(
-          newProfilePicture
-        );
-        ws.send(
-          JSON.stringify({
-            type: "update_user",
-            updatedNickname: nickname,
-            updatedProfilePicture: profilePictureResponse,
-            groupID: selectedGroup?._id.toString() || null,
-          })
-        );
+      if (selectedFile) {
+        profilePictureResponse = await handleProfilePictureChange(selectedFile);
+        setProfilePicture(profilePictureResponse);
       }
 
       if (newNick.trim() !== "") {
         setNickname(newNick);
-
-        if (ws) {
-          ws.send(
-            JSON.stringify({
-              type: "update_user",
-              updatedNickname: newNick,
-              updatedProfilePicture: profilePictureResponse,
-              groupID: selectedGroup?._id.toString() || null,
-            })
-          );
-        }
       }
+
+      ws.send(
+        JSON.stringify({
+          type: "update_user",
+          updatedNickname: newNick || nickname,
+          updatedProfilePicture: profilePictureResponse,
+          groupID: selectedGroup?._id.toString() || null,
+        })
+      );
+
+      setSelectedFile(null);
+      setPreview(profilePictureResponse);
     } catch (error) {
       console.error("Error in handleSubmit:", error);
     }
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
+
+  // const handleSubmit = async () => {
+  //   setEdit(false);
+  //   const newNick = nameInputRef.current.value;
+  //   const newProfilePicture = fileInputRef.current.files[0];
+
+  //   try {
+  //     let profilePictureResponse = profilePicture;
+
+  //     if (newProfilePicture) {
+  //       profilePictureResponse = await handleProfilePictureChange(
+  //         newProfilePicture
+  //       );
+  //       ws.send(
+  //         JSON.stringify({
+  //           type: "update_user",
+  //           updatedNickname: nickname,
+  //           updatedProfilePicture: profilePictureResponse,
+  //           groupID: selectedGroup?._id.toString() || null,
+  //         })
+  //       );
+  //     }
+
+  //     if (newNick.trim() !== "") {
+  //       setNickname(newNick);
+
+  //       if (ws) {
+  //         ws.send(
+  //           JSON.stringify({
+  //             type: "update_user",
+  //             updatedNickname: newNick,
+  //             updatedProfilePicture: profilePictureResponse,
+  //             groupID: selectedGroup?._id.toString() || null,
+  //           })
+  //         );
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in handleSubmit:", error);
+  //   }
+
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.value = "";
+  //   }
+  // };
 
   const DisplayUser = () => {
     return (
@@ -110,7 +165,7 @@ const User = () => {
           </button>
           <div className="flex flex-col h-full items-center justify-center space-y-3 p-2">
             <img
-              src={profilePicture}
+              src={preview || profilePicture}
               className="w-40 h-40 hover:cursor-pointer dark:hover:bg-accent hover:bg-accent_light rounded-full object-cover"
               alt="Profile"
               onClick={() => fileInputRef.current.click()}
@@ -120,6 +175,7 @@ const User = () => {
               type="file"
               accept="image/*"
               className="hidden"
+              onChange={handleFileChange}
             />
             <input
               ref={nameInputRef}
