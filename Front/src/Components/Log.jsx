@@ -180,15 +180,15 @@ export default function Log() {
           <div className="ml-5 flex items-center gap-1">
             <div className="border-l border-t w-7 h-3 dark:border-gray-300 border-black rounded-tl-lg" />
             <img
-              src={parent.profilePicture}
+              src={parent?.profilePicture || "base.png"}
               alt="Profile"
               className="size-5 ring-1 dark:ring-white ring-black rounded-full"
             />
             <span className="text-[16px] font-bold text-sm dark:text-gray-300 text-black hover:underline hover:cursor-pointer">
-              {parent.nickname}
+              {parent?.nickname || "Anonymous"}
             </span>
             <span className="dark:text-gray-300 text-black line-clamp-1 text-ellipsis text-[12px]">
-              {parent.message}
+              {parent?.message || "Deleted Comment."}
             </span>
           </div>
           <RegularMessage msg={msg} />
